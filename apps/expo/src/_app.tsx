@@ -1,14 +1,20 @@
 import { registerRootComponent } from "expo";
-import { View, Text } from "react-native";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { transformer, trpc } from "./lib/trpc";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { SessionProvider, useSession } from "next-auth/expo";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import Main from "./views";
 import { serverUrl } from "./lib/constants";
+
+import Login from "./views/login";
+import Feed from "./views/feed";
+import Loader from "./views/loader";
+
+const Stack = createNativeStackNavigator();
 
 const InnerApp = () => {
    const [queryClient] = useState(() => new QueryClient());
@@ -28,13 +34,25 @@ const InnerApp = () => {
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
          <QueryClientProvider client={queryClient}>
             <SafeAreaProvider>
-               {status === "loading" ? (
-                  <View className="h-screen flex justify-center items-center">
-                     <Text>Loading...</Text>
-                  </View>
-               ) : (
-                  <Main />
-               )}
+               <NavigationContainer>
+                  <Stack.Navigator>
+                     {status !== "authenticated" ? (
+                        <Stack.Group screenOptions={{ headerShown: false }}>
+                           {status === "loading" ? (
+                              <Stack.Screen name="Loading" component={Loader} />
+                           ) : (
+                              status === "unauthenticated" && (
+                                 <Stack.Screen name="Login" component={Login} />
+                              )
+                           )}
+                        </Stack.Group>
+                     ) : (
+                        <>
+                           <Stack.Screen name="Feed" component={Feed} />
+                        </>
+                     )}
+                  </Stack.Navigator>
+               </NavigationContainer>
                <StatusBar />
             </SafeAreaProvider>
          </QueryClientProvider>

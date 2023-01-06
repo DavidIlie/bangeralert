@@ -11,15 +11,15 @@ export const authOptions: NextAuthOptions = {
    adapter,
    providers: [
       SpotifyProvider({
-         clientId: process.env.AUTH_SPOTIFY_CLIENT_ID as string,
-         clientSecret: process.env.AUTH_SPOTIFY_CLIENT_SECRET as string,
+         clientId: process.env.AUTH_SPOTIFY_CLIENT_ID,
+         clientSecret: process.env.AUTH_SPOTIFY_CLIENT_SECRET,
       }),
       {
          ...SpotifyProvider({
             name: "Spotify Expo",
             checks: ["state"],
-            clientId: process.env.AUTH_SPOTIFY_CLIENT_ID as string,
-            clientSecret: process.env.AUTH_SPOTIFY_CLIENT_SECRET as string,
+            clientId: process.env.AUTH_SPOTIFY_CLIENT_ID,
+            clientSecret: process.env.AUTH_SPOTIFY_CLIENT_SECRET,
             token: {
                async request(context) {
                   const tokens = await context.client.oauthCallback(
