@@ -2,11 +2,12 @@ import { Text, View, Pressable } from "react-native";
 import { useSession, signOut, signIn } from "next-auth/expo";
 
 import { trpc } from "../lib/trpc";
-import socialLogin from "../lib/auth";
+import { useAuth } from "../lib/auth";
 
 const Home = () => {
    const { data: response } = trpc.useQuery(["test"]);
    const { status, data } = useSession();
+   const spotifyLogin = useAuth("spotify");
 
    return (
       <View className="flex justify-center items-center h-full">
@@ -19,7 +20,7 @@ const Home = () => {
             ) : status === "unauthenticated" ? (
                <Pressable
                   className="mx-auto mt-2 bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-md"
-                  onPress={() => signIn(() => socialLogin("discord"))}
+                  onPress={() => signIn(spotifyLogin)}
                >
                   <Text className="text-white font-medium">Log In</Text>
                </Pressable>

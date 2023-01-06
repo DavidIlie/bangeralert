@@ -1,25 +1,25 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import DiscordProvider from "next-auth/providers/discord";
+import SpotifyProvider from "next-auth/providers/spotify";
 
 import prisma from "../prisma";
-import { isValidProvider, nativeProviders } from "./providers";
+import { checkCounterpart, nativeProviders } from "./providers";
 
 const adapter = PrismaAdapter(prisma);
 
 export const authOptions: NextAuthOptions = {
    adapter,
    providers: [
-      DiscordProvider({
-         clientId: process.env.AUTH_DISCORD_CLIENT_ID as string,
-         clientSecret: process.env.AUTH_DISCORD_CLIENT_SECRET as string,
+      SpotifyProvider({
+         clientId: process.env.AUTH_SPOTIFY_CLIENT_ID as string,
+         clientSecret: process.env.AUTH_SPOTIFY_CLIENT_SECRET as string,
       }),
       {
-         ...DiscordProvider({
-            name: "Discord Expo",
+         ...SpotifyProvider({
+            name: "Spotify Expo",
             checks: ["state"],
-            clientId: process.env.AUTH_DISCORD_CLIENT_ID as string,
-            clientSecret: process.env.AUTH_DISCORD_CLIENT_SECRET as string,
+            clientId: process.env.AUTH_SPOTIFY_CLIENT_ID as string,
+            clientSecret: process.env.AUTH_SPOTIFY_CLIENT_SECRET as string,
             token: {
                async request(context) {
                   const tokens = await context.client.oauthCallback(
@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
                   return { tokens };
                },
             },
-            id: nativeProviders.discord,
+            id: nativeProviders.spotify,
          }),
       },
    ],
@@ -42,8 +42,8 @@ export const authOptions: NextAuthOptions = {
          });
          if (!userByAccount) {
             const provider = account.provider;
-            if (isValidProvider(provider)) {
-               const counterpart = nativeProviders[provider];
+            const { valid, counterpart } = checkCounterpart(provider);
+            if (valid) {
                const userByAccount = await adapter.getUserByAccount({
                   providerAccountId: account.providerAccountId,
                   provider: counterpart,

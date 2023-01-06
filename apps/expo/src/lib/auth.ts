@@ -1,52 +1,55 @@
 import * as AuthSession from "expo-auth-session";
 import { SigninResult, getSignInInfo } from "next-auth/expo";
+import { useAutoDiscovery } from "expo-auth-session";
 
-import { nativeProviders, isValidProvider } from "@app/server";
-import { getDiscoveryUrls } from "@app/server/src/auth/providers";
+import { nativeProviders, isValidProvider, getData } from "@app/server";
 
-const socialLogin = async (
-   baseProvider: keyof typeof nativeProviders
-): Promise<SigninResult> => {
-   const proxyRedirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+export const useAuth = (baseProvider: keyof typeof nativeProviders) => {
+   const data = getData(baseProvider);
+   const discovery = data.discoveryUrl
+      ? useAutoDiscovery(data.discoveryUrl)
+      : data.discovery;
 
-   let provider = isValidProvider(baseProvider)
-      ? nativeProviders[baseProvider]
-      : baseProvider;
+   const funcSignIn = async (): Promise<SigninResult | null> => {
+      const proxyRedirectUri = AuthSession.makeRedirectUri({ useProxy: true });
 
-   const signinInfo = await getSignInInfo({
-      provider: provider,
-      proxyRedirectUri,
-   });
+      const provider = isValidProvider(baseProvider)
+         ? nativeProviders[baseProvider]
+         : baseProvider;
 
-   if (!signinInfo) {
-      throw new Error("Couldn't get sign in info from server");
-   }
+      const signinInfo = await getSignInInfo({
+         provider: provider,
+         proxyRedirectUri,
+      });
 
-   const { state, codeChallenge, stateEncrypted, codeVerifier, clientId } =
-      signinInfo;
+      if (!signinInfo) {
+         throw new Error("Couldn't get sign in info from server");
+      }
 
-   const request = new AuthSession.AuthRequest({
-      clientId: clientId,
-      scopes: ["identify", "email"],
-      redirectUri: proxyRedirectUri,
-      usePKCE: false,
-   });
+      const { state, codeChallenge, stateEncrypted, codeVerifier, clientId } =
+         signinInfo;
 
-   const discovery = getDiscoveryUrls(baseProvider);
+      const request = new AuthSession.AuthRequest({
+         clientId: clientId,
+         scopes: data.scopes,
+         redirectUri: proxyRedirectUri,
+         usePKCE: false,
+      });
 
-   request.state = state;
-   request.codeChallenge = codeChallenge;
-   await request.makeAuthUrlAsync(discovery);
+      request.state = state;
+      request.codeChallenge = codeChallenge;
+      await request.makeAuthUrlAsync(discovery!);
 
-   const result = await request.promptAsync(discovery, { useProxy: true });
+      const result = await request.promptAsync(discovery!, { useProxy: true });
 
-   return {
-      result,
-      state,
-      stateEncrypted,
-      codeVerifier,
-      provider,
+      return {
+         result,
+         state,
+         stateEncrypted,
+         codeVerifier,
+         provider,
+      };
    };
-};
 
-export default socialLogin;
+   return funcSignIn;
+};

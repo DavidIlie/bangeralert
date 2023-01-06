@@ -16,10 +16,10 @@ const Hello: NextPage = () => {
                <div>Loading...</div>
             ) : status === "unauthenticated" ? (
                <button
-                  onClick={() => signIn("discord")}
+                  onClick={() => signIn("spotify")}
                   className="bg-blue-500 hover:bg-blue-600 py-2 px-1 rounded-md font-medium text-white duration-150"
                >
-                  test discord auth
+                  test spotify auth
                </button>
             ) : (
                <div>

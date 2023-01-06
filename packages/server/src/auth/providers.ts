@@ -1,6 +1,27 @@
 export const nativeProviders = {
-   discord: "discord-expo",
+   spotify: "spotify-expo",
 } as const;
+
+type validProviderType =
+   | { valid: false; counterpart?: undefined }
+   | { valid: true; counterpart: string };
+
+export const checkCounterpart = (provider: string): validProviderType => {
+   const nextProviders = Object.keys(nativeProviders);
+   const expoProviders = Object.values(nativeProviders);
+
+   if (nextProviders.includes(provider)) {
+      const index = nextProviders.indexOf(provider);
+      return { valid: true, counterpart: expoProviders[index]! };
+   }
+
+   if (expoProviders.includes(provider as any)) {
+      const index = expoProviders.indexOf(provider as any);
+      return { valid: true, counterpart: nextProviders[index]! };
+   }
+
+   return { valid: false };
+};
 
 export const isValidProvider = (
    k: string
@@ -8,18 +29,35 @@ export const isValidProvider = (
    return k in nativeProviders;
 };
 
-export const nativeDiscoveryUrls = {
-   discord: {
-      authorizationEndpoint: "https://discord.com/api/oauth2/authorize",
-      tokenEndpoint: "https://discord.com/api/oauth2/token",
-      revocationEndpoint: "https://discord.com/api/oauth2/token/revoke",
-   },
-};
+type ProviderType =
+   | {
+        discovery: {
+           authorizationEndpoint: string;
+           tokenEndpoint: string;
+           revokeEndpoint?: string;
+        };
+        discoveryUrl?: never;
+        scopes: string[];
+     }
+   | {
+        discoveryUrl: string;
+        discovery?: never;
+        scopes: string[];
+     };
 
-export const getDiscoveryUrls = (provider: keyof typeof nativeProviders) => {
-   if (!isValidProvider(provider))
-      throw new Error(
-         `Could not find discovery for ${provider} or the provider provided is not correct. Have you typed it in correctly? If you need to add a provider discovery check 'packages/server/src/auth/providers.ts'`
-      );
-   return nativeDiscoveryUrls[provider];
-};
+export const getData = (provider: keyof typeof nativeProviders): ProviderType =>
+   ({
+      spotify: {
+         discovery: {
+            authorizationEndpoint: "https://accounts.spotify.com/authorize",
+            tokenEndpoint: "https://accounts.spotify.com/api/token",
+         },
+         scopes: [
+            "playlist-read-private",
+            "playlist-read-collaborative",
+            "user-top-read",
+            "user-read-recently-played",
+            "user-library-read",
+         ],
+      },
+   }[provider]);
