@@ -1,16 +1,16 @@
 {
    "pipeline": {
       "build": {
-         "dependsOn": [
-            "^build",
-            "$DATABASE_URL",
-            "$AUTH_SPOTIFY_CLIENT_ID",
-            "$AUTH_SPOTIFY_CLIENT_SECRET",
-            "$NEXTAUTH_URL",
-            "$NEXTAUTH_SECRET",
-            "$NEXTAUTH_EXPO_URL"
-         ],
-         "outputs": [".next/**", ".expo/**"]
+         "dependsOn": ["^build"],
+         "outputs": [".next/**", ".expo/**"],
+         "env": [
+            "DATABASE_URL",
+            "AUTH_SPOTIFY_CLIENT_ID",
+            "AUTH_SPOTIFY_CLIENT_SECRET",
+            "NEXTAUTH_URL",
+            "NEXTAUTH_SECRET",
+            "NEXTAUTH_EXPO_URL"
+         ]
       },
       "lint": {
          "outputs": []
