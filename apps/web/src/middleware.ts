@@ -25,7 +25,7 @@ const handler: NextMiddleware = async (req) => {
    if (r.status !== 200 || Object.keys(response).length === 0)
       return NextResponse.redirect(redirectLoginUrl);
 
-   if (!path.startsWith("/app") && !path.includes("/sign-in"))
+   if (!path.startsWith("/app"))
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/app`);
 
    return NextResponse.next();
