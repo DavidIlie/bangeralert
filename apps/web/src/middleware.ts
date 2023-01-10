@@ -8,6 +8,15 @@ const handler: NextMiddleware = async (req) => {
       path !== "/" ? `?callbackUrl=${encodeURIComponent(path)}` : ""
    }`;
 
+   if (typeof sessionToken !== "object" && path.startsWith("/sign-in"))
+      return NextResponse.next();
+
+   if (typeof sessionToken !== "object")
+      return NextResponse.redirect(redirectLoginUrl);
+
+   if (typeof sessionToken.value !== "string")
+      return NextResponse.redirect(redirectLoginUrl);
+
    if (path.startsWith("/app") || path.startsWith("/sign-in")) {
       const r = await fetch(
          `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/proxy`,
@@ -35,12 +44,6 @@ const handler: NextMiddleware = async (req) => {
 
       return NextResponse.next();
    }
-
-   if (typeof sessionToken !== "object")
-      return NextResponse.redirect(redirectLoginUrl);
-
-   if (typeof sessionToken.value !== "string")
-      return NextResponse.redirect(redirectLoginUrl);
 
    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/app`);
 };
