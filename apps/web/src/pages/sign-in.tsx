@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { NextSeo } from "next-seo";
 
 import { FaSpotify } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
@@ -26,6 +27,7 @@ const SignIn: NextPage = () => {
 
   return (
     <>
+      <NextSeo title="Sign In" />
       <div className="flex flex-grow items-center justify-center py-12 sm:px-6 lg:px-8">
         <div className="w-full sm:mx-auto sm:max-w-md">
           <h1 className="mb-4 text-center text-4xl font-medium">BangerAlert</h1>
