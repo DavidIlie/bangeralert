@@ -69,7 +69,7 @@ export const HomeScreen = () => {
   const { status, data } = useSession();
 
   return (
-    <SafeAreaView className="bg-[#2e026d] bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+    <SafeAreaView className="bg-dark-bg">
       <View className="h-full w-full p-4">
         {status === "unauthenticated" ? (
           <Pressable

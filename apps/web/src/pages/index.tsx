@@ -1,22 +1,36 @@
-import type { NextPage } from "next";
-import { useSession, signIn, signOut } from "next-auth/react";
+import type { GetServerSideProps, NextPage } from "next";
 
-const Home: NextPage = () => {
-  const { data, status } = useSession();
+import { getServerSession } from "@acme/auth/backend";
+
+const Page: NextPage = () => {
   return (
-    <>
-      {status === "unauthenticated" ? (
-        <button onClick={() => signIn("spotify")}>sign in</button>
-      ) : status === "authenticated" ? (
-        <>
-          <p>Signed in as: {data?.user?.name}</p>
-          <button onClick={() => signOut()}>sign out</button>
-        </>
-      ) : (
-        <p>Loading</p>
-      )}
-    </>
+    <div className="flex min-h-screen items-center justify-center">
+      <h1 className="text-5xl font-medium">Error</h1>
+    </div>
   );
 };
 
-export default Home;
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  try {
+    const session = await getServerSession({ req, res });
+    if (!session)
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/sign-in",
+        },
+      };
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/app",
+      },
+    };
+  } catch (error) {
+    return {
+      props: {},
+    };
+  }
+};
+
+export default Page;
