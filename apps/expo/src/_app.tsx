@@ -6,15 +6,21 @@ import { getBaseUrl, TRPCProvider } from "./lib/api";
 
 import { HomeScreen } from "./screens/home";
 
+const InnerApp = () => {
+  return (
+    <TRPCProvider>
+      <SafeAreaProvider>
+        <HomeScreen />
+        <StatusBar />
+      </SafeAreaProvider>
+    </TRPCProvider>
+  );
+};
+
 export const App = () => {
   return (
     <SessionProvider baseUrl={getBaseUrl()}>
-      <TRPCProvider>
-        <SafeAreaProvider>
-          <HomeScreen />
-          <StatusBar />
-        </SafeAreaProvider>
-      </TRPCProvider>
+      <InnerApp />
     </SessionProvider>
   );
 };
