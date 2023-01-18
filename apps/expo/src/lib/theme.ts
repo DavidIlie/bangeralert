@@ -1,11 +1,14 @@
 import { DefaultTheme } from "@react-navigation/native";
 
+//@ts-ignore
+import tConfig from "@acme/tailwind-config";
+
 export const appTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: "#181a1b",
-    card: "#242526",
+    background: tConfig.theme.extend.colors["dark-bg"],
+    card: tConfig.theme.extend.colors["dark-containers"],
     text: "white",
   },
 };
