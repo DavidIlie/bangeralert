@@ -44,7 +44,7 @@ export const RightPanel: React.FC<BaseProps> = ({ children }) => {
       <HeaderWrapper>
         <RightHeader />
       </HeaderWrapper>
-      <div className="mt-6">{children}</div>
+      <div className="mt-5">{children}</div>
     </FixedGridPanel>
   );
 };
