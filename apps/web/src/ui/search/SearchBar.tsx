@@ -23,14 +23,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       } ${className}`}
     >
       {!mobile && (
-        <div className="pointer-events-none mx-4 flex h-full items-center">
+        <div className="flex items-center h-full mx-4 pointer-events-none">
           <AiOutlineSearch />
         </div>
       )}
       <input
         className={`rounded-8 w-full rounded-lg bg-dark-containers py-2 px-4 text-gray-100 placeholder-gray-300 focus:outline-none ${inputClassName} pl-0`}
         {...props}
-        placeholder="Search for songs, users or genres"
       />
       {isLoading && (
         <div

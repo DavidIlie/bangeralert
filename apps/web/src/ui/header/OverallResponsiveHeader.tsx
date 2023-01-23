@@ -14,7 +14,10 @@ export const OverallResponsiveHeader: React.FC = () => {
           <LeftHeader />
         </div>
       ) : null}
-      <SearchBar />
+      <SearchBar
+        inputClassName="placeholder-gray-500 text-gray-500"
+        placeholder="Search for songs, users or genres"
+      />
       {screenType === "1-cols" || screenType === "fullscreen" ? (
         <div className="flex ml-4">
           <RightHeader />
