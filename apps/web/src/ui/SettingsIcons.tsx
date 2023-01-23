@@ -41,7 +41,7 @@ export const SettingsIcon: React.FC<SettingsIconProps> = ({
         className={`${cn} text-gray-100`}
       >
         {icon}
-        <span className="flex flex-1 ml-2 text-primary-100">{label}</span>
+        <span className="flex flex-1 ml-2 text-sm text-gray-100">{label}</span>
         {trailingIcon && trailingIcon}
       </a>
     );
@@ -50,7 +50,7 @@ export const SettingsIcon: React.FC<SettingsIconProps> = ({
   return (
     <button onClick={onClick} className={cn}>
       {icon}
-      <span className="flex flex-1 ml-2 text-primary-100">{label}</span>
+      <span className="flex flex-1 ml-2 text-sm text-gray-100">{label}</span>
       {trailingIcon && trailingIcon}
     </button>
   );

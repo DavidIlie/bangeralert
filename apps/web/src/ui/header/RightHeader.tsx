@@ -12,7 +12,7 @@ const RightHeader: React.FC = () => {
   return (
     <DropdownController
       zIndex={20}
-      className="fixed right-3 top-16 md:top-[5.5rem] md:right-0 md:mr-48"
+      className="top-16s fixed right-3 md:top-[5.5rem] md:right-0 md:mr-48"
       innerClassName="fixed transform -translate-x-full"
       overlay={(close) => (
         <div
