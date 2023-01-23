@@ -10,10 +10,12 @@ export const AppLayout: React.FC<{
   leftPanel?: React.ReactNode;
   leftResponsivePanel?: React.ReactNode;
   children: React.ReactNode;
+  extraMiddleLayout?: React.ReactNode;
 }> = ({
   rightPanel = <div />,
   leftResponsivePanel = <div />,
   leftPanel = <div />,
+  extraMiddleLayout,
   children,
 }) => {
   const screenType = useScreenType();
@@ -25,7 +27,7 @@ export const AppLayout: React.FC<{
       components = (
         <>
           <LeftPanel>{leftPanel}</LeftPanel>
-          <MiddlePanel>{children}</MiddlePanel>
+          <MiddlePanel extra={extraMiddleLayout}>{children}</MiddlePanel>
           <RightPanel>{rightPanel}</RightPanel>
         </>
       );
@@ -34,7 +36,7 @@ export const AppLayout: React.FC<{
       components = (
         <>
           <LeftPanel>{leftResponsivePanel}</LeftPanel>
-          <MiddlePanel>{children}</MiddlePanel>
+          <MiddlePanel extra={extraMiddleLayout}>{children}</MiddlePanel>
           <RightPanel>{rightPanel}</RightPanel>
         </>
       );
@@ -43,7 +45,7 @@ export const AppLayout: React.FC<{
       components = (
         <>
           <LeftPanel>{leftResponsivePanel}</LeftPanel>
-          <MiddlePanel>{children}</MiddlePanel>
+          <MiddlePanel extra={extraMiddleLayout}>{children}</MiddlePanel>
         </>
       );
       break;

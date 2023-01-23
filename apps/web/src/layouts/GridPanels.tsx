@@ -25,13 +25,14 @@ export const LeftPanel: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const MiddlePanel: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const MiddlePanel: React.FC<{
+  children: React.ReactNode;
+  extra?: React.ReactNode;
+}> = ({ children, extra }) => {
   return (
     <div>
       <div className="sticky top-0 flex flex-col flex-1 py-4 pt-10 bg-dark-bg">
-        <MiddleHeader />
+        <MiddleHeader>{extra}</MiddleHeader>
       </div>
       <div className="px-4">{children}</div>
     </div>

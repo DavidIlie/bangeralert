@@ -1,19 +1,17 @@
-import React from "react";
-import { Button } from "../Button";
+import * as React from "react";
 
 import { SearchBar } from "../search/SearchBar";
 
-const MiddleHeader: React.FC = () => {
+const MiddleHeader: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <div className="w-full px-4">
       <SearchBar
         inputClassName="placeholder-gray-500 text-gray-500"
         placeholder="Search for songs, users or genres"
       />
-      <div className="flex items-center justify-between mt-10">
-        <h1 className="text-xl font-bold">Your Feed</h1>
-        <Button>New Song</Button>
-      </div>
+      {children}
     </div>
   );
 };
