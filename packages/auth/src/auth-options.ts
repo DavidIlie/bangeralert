@@ -35,7 +35,14 @@ export const authOptions: NextAuthOptions = {
     },
   ],
   callbacks: {
-    async signIn({ account }) {
+    async signIn({ account, user }) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          username: user.name?.split(" ").join("-").toLocaleLowerCase(),
+        },
+      });
+
       const userByAccount = await adapter.getUserByAccount({
         providerAccountId: account.providerAccountId,
         provider: account.provider,
@@ -57,6 +64,33 @@ export const authOptions: NextAuthOptions = {
         }
       }
       return true;
+    },
+    async session({ session, user }) {
+      if (session?.user) {
+        session.user.id = user.id;
+        session.user.description = user.description as string;
+        session.user.username = user.username as string;
+        session.user.website = user.website as string;
+
+        const followData = await prisma.user.findUnique({
+          where: { id: session?.user?.id },
+          include: {
+            followRecieved: true,
+            followSent: true,
+            _count: {
+              select: {
+                followRecieved: true,
+                followSent: true,
+              },
+            },
+          },
+        });
+
+        session.user.followers = followData?._count.followRecieved as number;
+        session.user.following = followData?._count.followSent as number;
+      }
+
+      return session;
     },
   },
   // pages: {

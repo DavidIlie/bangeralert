@@ -53,7 +53,7 @@ const RightPanel: React.FC = () => {
                 {data?.user?.name}
               </span>
               <span className="text-left text-gray-300 break-all">
-                @{data?.user?.name?.split(" ").join("-").toLocaleLowerCase()}
+                @{data?.user?.username}
               </span>
             </div>
           </div>
@@ -61,18 +61,22 @@ const RightPanel: React.FC = () => {
       </Link>
       <div className="flex mt-2">
         <div className="flex py-1">
-          <span className="font-bold text-gray-100">{nFormatter(2000)}</span>
+          <span className="font-bold text-gray-100">
+            {nFormatter(data?.user?.followers || 0)}
+          </span>
           <span className="ml-1.5 lowercase text-gray-400">Followers</span>
         </div>
         <div className="flex px-2 py-1">
-          <span className="font-bold text-gray-100">{nFormatter(25)}</span>
+          <span className="font-bold text-gray-100">
+            {nFormatter(data?.user?.following || 0)}
+          </span>
           <span className="ml-1.5 lowercase text-gray-400">Following</span>
         </div>
       </div>
       <div className="flex mt-1 text-left text-gray-200 break-words">
-        Your average web developer
+        {data?.user?.description || "No description..."}
       </div>
-      {true && <Website website="https://davidilie.com" />}
+      {data?.user?.website && <Website website="https://davidilie.com" />}
     </div>
   );
 };
