@@ -9,11 +9,11 @@ const LeftHeader: React.FC<LeftHeaderProps> = ({}) => {
   const screenType = useScreenType();
   return (
     <Link href="/app">
-      <div className=" w-full">
+      <div className="w-full">
         {screenType === "3-cols" ? (
           <LgLogo />
         ) : (
-          <div className="flex w-full justify-center">
+          <div className="flex justify-center w-full">
             <LogoIcon width={40} height={40} color="#EFE7DC" />
           </div>
         )}

@@ -10,7 +10,7 @@ const RightHeader: React.FC = () => {
     <img
       src={data.user?.image || ""}
       alt={`${data.user?.name}'s profile photo`}
-      className="h-12 w-12 cursor-pointer rounded-full object-cover"
+      className="object-cover w-10 h-10 rounded-full cursor-pointer"
     />
   );
 };

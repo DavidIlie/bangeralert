@@ -20,7 +20,7 @@ export const LeftPanel: React.FC<{ children: React.ReactNode }> = ({
       <HeaderWrapper>
         <LeftHeader />
       </HeaderWrapper>
-      {children}
+      <div className="mt-6">{children}</div>
     </FixedGridPanel>
   );
 };
@@ -44,7 +44,7 @@ export const RightPanel: React.FC<BaseProps> = ({ children }) => {
       <HeaderWrapper>
         <RightHeader />
       </HeaderWrapper>
-      {children}
+      <div className="mt-6">{children}</div>
     </FixedGridPanel>
   );
 };

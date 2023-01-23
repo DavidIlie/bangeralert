@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { useScreenType } from "../hooks/useScreenType";
 import { AppGrid } from "../ui/AppGrid";
+import { OverallResponsiveHeader } from "../ui/header/OverallResponsiveHeader";
 import { LeftPanel, MiddlePanel, RightPanel } from "./GridPanels";
 
 export const AppLayout: React.FC<{
@@ -47,7 +48,12 @@ export const AppLayout: React.FC<{
       );
       break;
     case "fullscreen":
-      components = <div>{children}</div>;
+      components = (
+        <div className="w-full px-4 mt-4">
+          <OverallResponsiveHeader />
+          {children}
+        </div>
+      );
   }
   return (
     <div className="flex flex-col items-center w-full h-screen scrollbar-thin scrollbar-thumb-gray-700">
