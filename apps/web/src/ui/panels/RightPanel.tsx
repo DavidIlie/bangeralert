@@ -58,7 +58,7 @@ const RightPanel: React.FC = () => {
       <div className="flex mt-1 text-left text-gray-200 break-words">
         {data?.user?.description || "No description..."}
       </div>
-      {data?.user?.website && <Website website="https://davidilie.com" />}
+      {data?.user?.website && <Website website={data?.user?.website} />}
     </div>
   );
 };
