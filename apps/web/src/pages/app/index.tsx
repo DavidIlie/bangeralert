@@ -1,11 +1,15 @@
+import * as React from "react";
 import type { NextPage } from "next";
-import { NextSeo } from "next-seo";
+
+import DefaultLayout from "../../layouts/DefaultLayout";
 
 const App: NextPage = () => {
   return (
-    <>
-      <NextSeo title="App" />
-    </>
+    <DefaultLayout>
+      {Array.from(Array(50).keys()).map((_s, index) => (
+        <div key={index}>Test {index}</div>
+      ))}
+    </DefaultLayout>
   );
 };
 
