@@ -1,9 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import { useState } from "react";
 import { useSession } from "next-auth/react";
 
 import { nFormatter } from "../../lib/nFormatter";
+import UserAvatar from "../UserAvatar";
 
 const regex = /(^\w+:|^)\/\//;
 
@@ -23,29 +22,12 @@ export const Website: React.FC<{ website: string }> = ({ website }) => {
 const RightPanel: React.FC = () => {
   const { data } = useSession();
 
-  const [isError, setError] = useState(false);
-
   return (
     <div className="flex flex-col w-full p-4 rounded-lg rounded-8 bg-dark-containers">
       <Link href="/app/profile">
         <button className="flex">
           <div className="flex">
-            <img
-              alt={
-                data?.user?.name
-                  ? `${data?.user?.name}-s-avatar`
-                  : "your-avatar"
-              }
-              className="object-cover w-20 h-20 rounded-full"
-              onError={() => setError(true)}
-              src={
-                isError
-                  ? `https://ui-avatars.com/api/${
-                      data?.user?.name ? `&name=${data?.user?.name}` : "&name"
-                    }&rounded=true&background=B23439&bold=true&color=FFFFFF`
-                  : data?.user?.image!
-              }
-            />
+            <UserAvatar />
           </div>
           <div className="flex mt-2">
             <div className="flex flex-col ml-3">
