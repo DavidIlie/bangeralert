@@ -8,7 +8,7 @@ const Profile: NextPage = () => {
     <>
       <NextSeo title="Profile" />
       <DefaultLayout>
-        <h1>hey</h1>
+        <h1>coming soon</h1>
       </DefaultLayout>
     </>
   );
