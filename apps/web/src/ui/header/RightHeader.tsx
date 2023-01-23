@@ -1,25 +1,56 @@
-/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
-import { useState } from "react";
-import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+import { AiOutlineUser, AiOutlineBug } from "react-icons/ai";
+
+import UserAvatar from "../UserAvatar";
+import { DropdownController } from "../DropdownController";
+import { BaseOverlay } from "../BaseOverlay";
+import { SettingsIcon } from "../SettingsIcons";
+
 const RightHeader: React.FC = () => {
-  const { data } = useSession();
-
-  const [isError, setError] = useState(false);
-
   return (
-    <img
-      onError={() => setError(true)}
-      src={
-        isError
-          ? `https://ui-avatars.com/api/${
-              data?.user?.name ? `&name=${data?.user?.name}` : "&name"
-            }&rounded=true&background=B23439&bold=true&color=FFFFFF`
-          : data?.user?.image!
-      }
-      alt={`${data?.user?.name!}'s profile photo`}
-      className="object-cover w-10 h-10 rounded-full cursor-pointer"
-    />
+    <DropdownController
+      zIndex={20}
+      className="absolute top-16 right-3 md:right-0"
+      innerClassName="fixed transform -translate-x-full"
+      overlay={(close) => (
+        <div
+          className="flex overflow-ellipsis whitespace-nowrap"
+          style={{ width: 200 }}
+        >
+          <BaseOverlay
+            onActionButtonClicked={() => {
+              close();
+              signOut();
+            }}
+            actionButton="Log Out"
+          >
+            <div className="flex flex-col">
+              <Link href="/app/profile">
+                <SettingsIcon
+                  onClick={close}
+                  icon={<AiOutlineUser />}
+                  label="Profile"
+                  transition
+                />
+              </Link>
+              <SettingsIcon
+                a={{
+                  href: "https://github.com/davidilie/bangeralert/issues",
+                }}
+                onClick={close}
+                icon={<AiOutlineBug />}
+                label={"Report a bug"}
+                transition
+              />
+            </div>
+          </BaseOverlay>
+        </div>
+      )}
+    >
+      <UserAvatar size="small" />
+    </DropdownController>
   );
 };
 
