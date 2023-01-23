@@ -36,12 +36,13 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ account, user }) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          username: user.name?.split(" ").join("-").toLocaleLowerCase(),
-        },
-      });
+      if (!(user as any).username)
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            username: user.name?.split(" ").join("-").toLocaleLowerCase(),
+          },
+        });
 
       const userByAccount = await adapter.getUserByAccount({
         providerAccountId: account.providerAccountId,
