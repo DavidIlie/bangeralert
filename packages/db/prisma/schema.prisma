@@ -87,6 +87,9 @@ model Artist {
   popularity Int?
   cover_url  String?
 
+  created     DateTime @default(now())
+  lastUpdated DateTime @default(now())
+
   albums Album[]
 
   Stars        Star[]        @relation("starArtist")
@@ -103,6 +106,9 @@ model Album {
   cover_url    String
   release_date DateTime
   total_tracks Int
+
+  created     DateTime @default(now())
+  lastUpdated DateTime @default(now())
 
   artist Artist[]
   songs  Song[]
@@ -122,6 +128,9 @@ model Song {
   preview_url  String
   track_number Int
   external_url String
+
+  created     DateTime @default(now())
+  lastUpdated DateTime @default(now())
 
   album Album[]
 

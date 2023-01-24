@@ -6,11 +6,16 @@ import { Button } from "../../ui/Button";
 import { api } from "../../lib/api";
 
 const App: NextPage = () => {
+  const utils = api.useContext();
+
   const createSongMutation = api.spotify.create.useMutation({
     onSuccess: (data) => {
+      utils.feed.getFeed.invalidate();
       console.log(data);
     },
   });
+
+  const { data } = api.feed.getFeed.useQuery();
 
   return (
     <DefaultLayout
@@ -29,8 +34,13 @@ const App: NextPage = () => {
         </div>
       }
     >
-      {Array.from(Array(50).keys()).map((_s, index) => (
-        <div key={index}>Test {index}</div>
+      {data?.map((song, index) => (
+        <div
+          key={index}
+          className="w-full px-2 py-4 mb-4 border-2 border-gray-900 rounded-md bg-dark-containers"
+        >
+          <h1 className="font-medium">{song.name}</h1>
+        </div>
       ))}
     </DefaultLayout>
   );
