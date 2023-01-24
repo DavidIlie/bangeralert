@@ -7,10 +7,127 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id      String @id @default(uuid())
-  title   String
-  content String
+enum CommentOptions {
+  UPVOTE
+  DOWNVOTE
+}
+
+model CommentOpinion {
+  id        String         @id @default(uuid())
+  type      CommentOptions
+  commentId String
+  Comment   Comment        @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  User      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id             String           @id @default(uuid())
+  comment        String
+  opinions       CommentOptions[]
+  userId         String
+  User           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  underReview    Boolean          @default(false)
+  date           DateTime         @default(now())
+  CommentOpinion CommentOpinion[]
+
+  songId String?
+  Song   Song?   @relation("commentSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
+
+  albumId String?
+  Album   Album?  @relation("commentAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
+
+  artistId String?
+  Artist   Artist? @relation("commentArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
+}
+
+model Star {
+  id     String  @id @default(uuid())
+  userId String
+  User   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating Int     @default(5)
+  hidden Boolean @default(false)
+
+  songId String?
+  Song   Song?   @relation("starSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
+
+  albumId String?
+  Album   Album?  @relation("starAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
+
+  artistId String?
+  Artist   Artist? @relation("starArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
+}
+
+model Interaction {
+  id            String  @id @default(uuid())
+  hasBookmarked Boolean
+  hasOnSpotify  Boolean
+  userId        String
+  User          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  songId String?
+  Song   Song?   @relation("interactionSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
+
+  albumId String?
+  Album   Album?  @relation("interactionAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
+
+  artistId String?
+  Artist   Artist? @relation("interactionArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
+}
+
+model Artist {
+  id         String @default(uuid())
+  spotify_id String @id
+
+  external_url String
+  name         String
+
+  genres     String[]
+  followers  Int?
+  popularity Int?
+  cover_url  String?
+
+  albums Album[]
+
+  Stars        Star[]        @relation("starArtist")
+  Comments     Comment[]     @relation("commentArtist")
+  Interactions Interaction[] @relation("interactionArtist")
+}
+
+model Album {
+  id         String @default(uuid())
+  spotify_id String @id
+
+  name         String
+  external_url String
+  cover_url    String
+  release_date DateTime
+  total_tracks Int
+
+  artist Artist[]
+  songs  Song[]
+
+  Stars        Star[]        @relation("starAlbum")
+  Comments     Comment[]     @relation("commentAlbum")
+  Interactions Interaction[] @relation("interactionAlbum")
+}
+
+model Song {
+  id         String @default(uuid())
+  spotify_id String @id
+
+  explicit     Boolean
+  name         String
+  popularity   Int
+  preview_url  String
+  track_number Int
+  external_url String
+
+  album Album[]
+
+  Stars        Star[]        @relation("starSong")
+  Comments     Comment[]     @relation("commentSong")
+  Interactions Interaction[] @relation("interactionSong")
 }
 
 enum FollowType {
@@ -64,12 +181,20 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  accessToken       String?
+  accessTokenObtain DateTime?
+
   username    String?
   description String?
   website     String?
 
-  followSent     Follow[] @relation("ogUserFollow")
-  followRecieved Follow[] @relation("targetUserFollow")
+  FollowSent     Follow[] @relation("ogUserFollow")
+  FollowRecieved Follow[] @relation("targetUserFollow")
+
+  Interaction    Interaction[]
+  CommentOpinion CommentOpinion[]
+  Comment        Comment[]
+  Star           Star[]
 }
 
 model VerificationToken {

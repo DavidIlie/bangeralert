@@ -3,7 +3,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import SpotifyProvider from "next-auth/providers/spotify";
 
 import { prisma } from "@acme/db";
-import { checkCounterpart, nativeProviders } from "./providers";
+import { checkCounterpart, getData, nativeProviders } from "./providers";
 
 const adapter = PrismaAdapter(prisma);
 
@@ -13,6 +13,10 @@ export const authOptions: NextAuthOptions = {
     SpotifyProvider({
       clientId: process.env.SPOTIFY_CLIENT_ID as string,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string,
+      authorization: {
+        url: getData("spotify").discovery?.authorizationEndpoint,
+        params: { scope: getData("spotify").scopes.join(" ") },
+      },
     }),
     {
       ...SpotifyProvider({
@@ -35,15 +39,7 @@ export const authOptions: NextAuthOptions = {
     },
   ],
   callbacks: {
-    async signIn({ account, user }) {
-      if (!(user as any).username)
-        await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            username: user.name?.split(" ").join("-").toLocaleLowerCase(),
-          },
-        });
-
+    async signIn({ account }) {
       const userByAccount = await adapter.getUserByAccount({
         providerAccountId: account.providerAccountId,
         provider: account.provider,
@@ -68,6 +64,14 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, user }) {
       if (session?.user) {
+        if ((user as any).username === null)
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              username: user.name?.split(" ").join("-").toLocaleLowerCase(),
+            },
+          });
+
         session.user.id = user.id;
         session.user.description = user.description as string;
         session.user.username = user.username as string;
@@ -76,19 +80,19 @@ export const authOptions: NextAuthOptions = {
         const followData = await prisma.user.findUnique({
           where: { id: session?.user?.id },
           include: {
-            followRecieved: true,
-            followSent: true,
+            FollowRecieved: true,
+            FollowSent: true,
             _count: {
               select: {
-                followRecieved: true,
-                followSent: true,
+                FollowRecieved: true,
+                FollowSent: true,
               },
             },
           },
         });
 
-        session.user.followers = followData?._count.followRecieved as number;
-        session.user.following = followData?._count.followSent as number;
+        session.user.followers = followData?._count.FollowRecieved as number;
+        session.user.following = followData?._count.FollowSent as number;
       }
 
       return session;

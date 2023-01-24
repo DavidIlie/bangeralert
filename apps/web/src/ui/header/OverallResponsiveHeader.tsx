@@ -19,7 +19,7 @@ export const OverallResponsiveHeader: React.FC = () => {
         placeholder="Search for songs, users or genres"
       />
       {screenType === "1-cols" || screenType === "fullscreen" ? (
-        <div className="flex ml-4">
+        <div className="flex ml-4 w-14">
           <RightHeader />
         </div>
       ) : null}
