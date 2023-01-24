@@ -23,7 +23,7 @@ const RightPanel: React.FC = () => {
   const { data } = useSession();
 
   return (
-    <div className="flex flex-col w-full p-4 rounded-lg rounded-8 bg-dark-containers">
+    <div className="flex flex-col w-full p-4 rounded-lg bg-dark-containers">
       <Link href="/app/profile">
         <button className="flex">
           <div className="flex">

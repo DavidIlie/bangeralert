@@ -125,7 +125,7 @@ model Song {
   explicit     Boolean
   name         String
   popularity   Int
-  preview_url  String
+  preview_url  String?
   track_number Int
   external_url String
 
