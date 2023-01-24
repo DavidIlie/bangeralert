@@ -15,7 +15,7 @@ export const feedRouter = createTRPCRouter({
         },
       },
       orderBy: {
-        created: "asc",
+        created: "desc",
       },
     });
   }),
