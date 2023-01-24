@@ -62,7 +62,7 @@ const App: NextPage = () => {
                       </div>
                     </>
                   ) : (
-                    <div className="flex items-center gap-0.5">
+                    <div className="flex items-center gap-1">
                       <p className="text-md md:text-xl">{song.name}</p>
                       <p className="mt-[0.2rem] truncate text-xs text-gray-300">
                         ({song.album[0]?.name} -{" "}
