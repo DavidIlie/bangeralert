@@ -24,6 +24,7 @@ const App: NextPage = () => {
   useEffect(() => {
     try {
       if (active && playPreview !== null) {
+        audioRef.current?.pause();
         audioRef.current = new Audio(playPreview);
         audioRef.current.volume = 1;
         if (playHead?.url === playPreview)
