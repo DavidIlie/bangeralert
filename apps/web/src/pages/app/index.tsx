@@ -95,7 +95,7 @@ const App: NextPage = () => {
               <source src={song.preview_url} />
             </audio>
           )}
-          <div className="mb-2 flex w-full gap-4 rounded-lg bg-dark-containers px-2 py-3">
+          <div className="mb-3 flex w-full gap-4 rounded-lg bg-dark-containers px-2 py-3">
             <img
               src={song.album[0]?.cover_url}
               className="w-1/4 rounded-md"
