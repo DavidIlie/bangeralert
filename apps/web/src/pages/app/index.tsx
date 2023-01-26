@@ -71,70 +71,67 @@ const App: NextPage = () => {
       }
     >
       {data?.map((song) => (
-        <div key={song.id}>
+        <Link
+          key={song.id}
+          href={`/app/song/${song.id}`}
+          onMouseEnter={() => {
+            audioRef.current?.pause();
+            setDelayHandler(
+              setTimeout(() => {
+                if (song.preview_url && active) {
+                  setPlayPreview(song.preview_url);
+                }
+              }, 1500),
+            );
+          }}
+          onMouseLeave={() => {
+            clearTimeout(delayHandler);
+            setPlayPreview(null);
+          }}
+        >
           {song.preview_url && (
             //@ts-ignore
             <audio ref={audioRef}>
               <source src={song.preview_url} />
             </audio>
           )}
-          <Link href={`/app/song/${song.id}`}>
-            <div
-              className="mb-3 w-full rounded-lg bg-dark-containers px-2 py-4"
-              onMouseEnter={() => {
-                audioRef.current?.pause();
-                setDelayHandler(
-                  setTimeout(() => {
-                    if (song.preview_url && active) {
-                      setPlayPreview(song.preview_url);
-                    }
-                  }, 1500),
-                );
-              }}
-              onMouseLeave={() => {
-                clearTimeout(delayHandler);
-                setPlayPreview(null);
-              }}
-            >
-              <div className="flex gap-4">
-                <img
-                  src={song.album[0]?.cover_url}
-                  className="w-1/4 rounded-md"
-                  alt={`${song.name}-cover`}
-                />
-                <div>
-                  <h1 className="font-medium">
-                    {song.name.length > 22 ? (
-                      <>
-                        <p className="text-md md:text-xl">{song.name}</p>
-                        <div className="flex items-center gap-0.5">
-                          <p className="truncate text-xs text-gray-300">
-                            ({song.album[0]?.name} -{" "}
-                            {song.album[0]?.artist[0]?.name})
-                          </p>
-                          {song.explicit && (
-                            <MdOutlineExplicit className="mt-[0.05rem] text-gray-300" />
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      <div className="flex items-center gap-1">
-                        <p className="text-md md:text-xl">{song.name}</p>
-                        <p className="mt-[0.2rem] truncate text-xs text-gray-300">
-                          ({song.album[0]?.name} -{" "}
-                          {song.album[0]?.artist[0]?.name})
-                        </p>
-                        {song.explicit && (
-                          <MdOutlineExplicit className="mt-1 text-gray-300" />
-                        )}
-                      </div>
+          <div className="mb-2 flex w-full gap-4 rounded-lg bg-dark-containers px-2 py-3">
+            <img
+              src={song.album[0]?.cover_url}
+              className="w-1/4 rounded-md"
+              alt={`${song.name}-cover`}
+            />
+            <div>
+              <div className="font-medium">
+                {song.name.length > 22 ? (
+                  <>
+                    <p className="text-md truncate md:text-xl">{song.name}</p>
+                    <div className="flex items-center gap-0.5">
+                      <p className="text-xs text-gray-300">
+                        ({song.album[0]?.name}
+                        {" - "}
+                        {song.album[0]?.artist[0]?.name})
+                      </p>
+                      {song.explicit && (
+                        <MdOutlineExplicit className="mt-[0.05rem] text-gray-300" />
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <p className="text-md md:text-xl">{song.name}</p>
+                    <p className="mt-[0.2rem] text-xs text-gray-300">
+                      ({song.album[0]?.name} - {song.album[0]?.artist[0]?.name})
+                    </p>
+                    {song.explicit && (
+                      <MdOutlineExplicit className="mt-1 text-gray-300" />
                     )}
-                  </h1>
-                </div>
+                  </div>
+                )}
               </div>
             </div>
-          </Link>
-        </div>
+          </div>
+        </Link>
       ))}
     </DefaultLayout>
   );
