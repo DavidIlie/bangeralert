@@ -58,6 +58,8 @@ export const getData = (provider: keyof typeof nativeProviders): ProviderType =>
         "user-top-read",
         "user-read-recently-played",
         "user-library-read",
+        "user-read-playback-state",
+        "user-read-currently-playing",
       ],
     },
   }[provider]);
