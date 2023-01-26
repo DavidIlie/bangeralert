@@ -32,12 +32,6 @@ export const spotifyRouter = createTRPCRouter({
       });
     }
 
-    if (!song)
-      throw new TRPCError({
-        message: "You are not playing any song!!",
-        code: "BAD_REQUEST",
-      });
-
     await addSongById(song.spotify_id, ctx.spotifyToken);
 
     return true;
