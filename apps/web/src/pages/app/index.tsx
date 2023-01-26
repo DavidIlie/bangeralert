@@ -76,11 +76,7 @@ const App: NextPage = () => {
             >
               New Song
             </Button>
-            <Button
-              onClick={() => {
-                createSelfSongMutation.mutate();
-              }}
-            >
+            <Button onClick={() => createSelfSongMutation.mutate()}>
               Song (wiap)
             </Button>
           </div>
