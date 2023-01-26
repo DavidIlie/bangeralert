@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
@@ -14,17 +15,29 @@ const App: NextPage = () => {
   const active = useTabActive();
   const audioRef = useRef<HTMLAudioElement>();
   const [delayHandler, setDelayHandler] = useState<any>(null);
+  const [playHead, setPlayHead] = useState<{
+    url: string;
+    time: number;
+  } | null>(null);
   const [playPreview, setPlayPreview] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       if (active && playPreview !== null) {
         audioRef.current = new Audio(playPreview);
-        audioRef.current?.play();
+        audioRef.current.volume = 1;
+        if (playHead?.url === playPreview)
+          audioRef.current.currentTime = playHead.time;
+        setPlayHead({ url: playPreview, time: 0 });
+        audioRef.current.play();
       }
-      if (playPreview === null) audioRef.current?.pause();
+      if (playPreview === null) {
+        let audio = audioRef.current!;
+        setPlayHead({ url: playHead!.url, time: audio.currentTime });
+        audio.pause();
+      }
     } catch (error) {
-      console.error("ERROR AUTOPLAYING SOUND PREVIEW");
+      console.error("ERROR AUTOPLAYING SOUND PREVIEW", error);
     }
   }, [playPreview, active]);
 
@@ -70,7 +83,7 @@ const App: NextPage = () => {
               onMouseEnter={() =>
                 setDelayHandler(
                   setTimeout(() => {
-                    if (song.preview_url) {
+                    if (song.preview_url && active) {
                       setPlayPreview(song.preview_url);
                     }
                   }, 2000),
