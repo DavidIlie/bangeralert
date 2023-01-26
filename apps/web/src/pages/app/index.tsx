@@ -26,7 +26,7 @@ const App: NextPage = () => {
       if (active && playPreview !== null) {
         audioRef.current?.pause();
         audioRef.current = new Audio(playPreview);
-        audioRef.current.volume = 1;
+        audioRef.current.volume = 0.6;
         if (playHead?.url === playPreview)
           audioRef.current.currentTime = playHead.time;
         setPlayHead({ url: playPreview, time: 0 });
@@ -81,15 +81,16 @@ const App: NextPage = () => {
           <Link href={`/app/song/${song.id}`}>
             <div
               className="mb-3 w-full rounded-lg bg-dark-containers px-2 py-4"
-              onMouseEnter={() =>
+              onMouseEnter={() => {
+                audioRef.current?.pause();
                 setDelayHandler(
                   setTimeout(() => {
                     if (song.preview_url && active) {
                       setPlayPreview(song.preview_url);
                     }
-                  }, 2000),
-                )
-              }
+                  }, 1500),
+                );
+              }}
               onMouseLeave={() => {
                 clearTimeout(delayHandler);
                 setPlayPreview(null);
