@@ -2,9 +2,20 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { AiOutlinePlayCircle, AiOutlinePauseCircle } from "react-icons/ai";
+import { create } from "zustand";
 
 import { api } from "../../lib/api";
 import useTabActive from "../../hooks/useTabActive";
+
+type Store = {
+  storeId: string | null;
+  setSongId: (v: string | null) => void;
+};
+
+const useSongStore = create<Store>((set) => ({
+  storeId: null,
+  setSongId: (input) => set({ storeId: input }),
+}));
 
 const SongPlayWrapper: React.FC<{
   children: React.ReactNode;
@@ -16,6 +27,8 @@ const SongPlayWrapper: React.FC<{
   let enabledAutoPlay = false;
   let enabledControlClient = true;
   let deviceId = "ae1df4d83625c1db6007e75ca736c7845d59eae9";
+
+  const { storeId, setSongId } = useSongStore();
 
   const active = useTabActive();
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -38,15 +51,27 @@ const SongPlayWrapper: React.FC<{
   const resumeClient = api.spotify.resumePlayback.useMutation();
 
   useEffect(() => {
+    if (storeId !== null && storeId !== songId) {
+      setPlayingPreview(false);
+      return audioRef.current?.pause();
+    }
+    if (storeId === null) {
+      handleStopAudio();
+    }
+  }, [storeId]);
+
+  useEffect(() => {
     try {
       if (active && playPreview !== null) {
         let audio = audioRef.current!;
         audio.volume = 0.6;
         if (playHead?.url === playPreview) audio.currentTime = playHead.time;
         setPlayHead({ url: playPreview || "", time: 0 });
+        setSongId(songId);
         audio.play();
       }
       if (playPreview === null) {
+        setSongId(null);
         let audio = audioRef.current!;
         try {
           setPlayHead({ url: playHead!.url, time: audio.currentTime });
@@ -79,11 +104,10 @@ const SongPlayWrapper: React.FC<{
 
   const handleStopAudio = async () => {
     setPlayingPreview(false);
-    if (hasPaused)
-      if (enabledControlClient)
-        await resumeClient.mutateAsync({
-          deviceId,
-        });
+    if (hasPaused && enabledControlClient)
+      await resumeClient.mutateAsync({
+        deviceId,
+      });
     setHasPaused(false);
     setPlayPreview(null);
   };
@@ -113,7 +137,7 @@ const SongPlayWrapper: React.FC<{
         </audio>
       )}
       {!enabledAutoPlay && (
-        <div className="cursor-pointer">
+        <div className={`cursor-pointer ${!previewUrl && "hidden"}`}>
           {playingPreview ? (
             <AiOutlinePauseCircle
               onClick={async () => await handleStopAudio()}

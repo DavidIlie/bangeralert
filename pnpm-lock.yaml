@@ -128,6 +128,7 @@ importers:
       tailwindcss: ^3.2.4
       typescript: ^4.9.4
       zod: ^3.20.0
+      zustand: ^4.3.2
     dependencies:
       '@acme/api': link:../../packages/api
       '@acme/auth': link:../../packages/auth
@@ -148,6 +149,7 @@ importers:
       react-popper: 2.3.0_r6q5zrenym2zg7je7hgi674bti
       react-responsive: 9.0.2_react@18.2.0
       zod: 3.20.2
+      zustand: 4.3.2_react@18.2.0
     devDependencies:
       '@types/node': 18.11.18
       '@types/react': 18.0.26
@@ -9791,4 +9793,20 @@ packages:
 
   /zod/3.20.2:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+    dev: false
+
+  /zustand/4.3.2_react@18.2.0:
+    resolution: {integrity: sha512-rd4haDmlwMTVWVqwvgy00ny8rtti/klRoZjFbL/MAcDnmD5qSw/RZc+Vddstdv90M5Lv6RPgWvm1Hivyn0QgJw==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false

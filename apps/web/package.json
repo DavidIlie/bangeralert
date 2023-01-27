@@ -29,7 +29,8 @@
     "react-icons": "^4.7.1",
     "react-popper": "^2.3.0",
     "react-responsive": "^9.0.2",
-    "zod": "^3.20.0"
+    "zod": "^3.20.0",
+    "zustand": "^4.3.2"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
