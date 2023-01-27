@@ -3,11 +3,13 @@ import * as React from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { MdOutlineExplicit } from "react-icons/md";
+import { BsChevronDoubleRight } from "react-icons/bs";
 
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { Button } from "../../ui/Button";
 import { api } from "../../lib/api";
 import SongPlayWrapper from "../../ui/song/SongPlayWrapper";
+import StarRating from "../../ui/StarRating";
 
 const App: NextPage = () => {
   const utils = api.useContext();
@@ -28,6 +30,28 @@ const App: NextPage = () => {
     });
 
   const { data } = api.feed.getFeed.useQuery();
+
+  const transition = "hover:text-blue-500 duration-150";
+
+  const songName = (song: any) => (
+    <Link href={`/song/${song.id}`}>
+      <p className={`text-md truncate md:text-xl ${transition}`}>{song.name}</p>
+    </Link>
+  );
+
+  const songExtraDetails = (song: any) => (
+    <div className="flex text-xs text-gray-300">
+      (
+      <Link href={`/album/${song.album[0]?.id}`}>
+        <p className={transition}>{song.album[0]?.name}</p>
+      </Link>
+      <div className="mx-0.5">-</div>
+      <Link href={`/artist/${song.album[0]?.artist[0]?.id}`}>
+        <p className={transition}>{song.album[0]?.artist[0]?.name}</p>
+      </Link>
+      )
+    </div>
+  );
 
   return (
     <DefaultLayout
@@ -74,13 +98,9 @@ const App: NextPage = () => {
             <div className="font-medium">
               {song.name.length > 20 ? (
                 <>
-                  <p className="text-md truncate md:text-xl">{song.name}</p>
+                  {songName(song)}
                   <div className="flex items-center gap-0.5">
-                    <p className="text-xs text-gray-300">
-                      ({song.album[0]?.name}
-                      {" - "}
-                      {song.album[0]?.artist[0]?.name})
-                    </p>
+                    {songExtraDetails(song)}
                     {song.explicit && (
                       <MdOutlineExplicit className="mt-[0.05rem] text-gray-300" />
                     )}
@@ -88,15 +108,20 @@ const App: NextPage = () => {
                 </>
               ) : (
                 <div className="flex items-center gap-1">
-                  <p className="text-md md:text-xl">{song.name}</p>
-                  <p className="mt-[0.2rem] text-xs text-gray-300">
-                    ({song.album[0]?.name} - {song.album[0]?.artist[0]?.name})
-                  </p>
+                  {songName(song)}
+                  <div className="mt-[0.2rem]">{songExtraDetails(song)}</div>
                   {song.explicit && (
                     <MdOutlineExplicit className="mt-1 text-gray-300" />
                   )}
                 </div>
               )}
+            </div>
+            <div className="mt-2">
+              <StarRating
+                stars={song._stars}
+                starDimension="35px"
+                starSpacing="5px"
+              />
             </div>
           </div>
         </SongPlayWrapper>
