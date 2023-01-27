@@ -41,7 +41,6 @@ const SongPlayWrapper: React.FC<{
     try {
       if (active && playPreview !== null) {
         let audio = audioRef.current!;
-        audio.pause();
         audio.volume = 0.6;
         if (playHead?.url === playPreview) audio.currentTime = playHead.time;
         setPlayHead({ url: playPreview || "", time: 0 });
@@ -60,18 +59,21 @@ const SongPlayWrapper: React.FC<{
   }, [playPreview, active]);
 
   const handlePlayAudio = async () => {
+    audioRef.current?.pause();
     if (previewUrl && active) {
       resumeClient.reset();
-      let shouldChangeState = false;
+      let response = null;
       if (enabledControlClient) {
-        const response = await pauseClientIfPlaying.mutateAsync({
+        const apiResponse = await pauseClientIfPlaying.mutateAsync({
           deviceId,
           songId,
         });
-        shouldChangeState = response;
+        response = apiResponse;
       }
-      if (shouldChangeState) return setPlayPreview(previewUrl);
-      if (shouldChangeState) setPlayingPreview(true);
+      if (response !== "DONT_PAUSE") {
+        setPlayPreview(previewUrl);
+        setPlayingPreview(true);
+      }
     }
   };
 
@@ -90,8 +92,8 @@ const SongPlayWrapper: React.FC<{
     <div
       {...rest}
       onMouseEnter={async () => {
-        audioRef.current?.pause();
         if (!enabledAutoPlay) return;
+        audioRef.current?.pause();
         setDelayHandler(
           setTimeout(async () => {
             await handlePlayAudio();
@@ -114,11 +116,17 @@ const SongPlayWrapper: React.FC<{
         <div className="cursor-pointer">
           {playingPreview ? (
             <AiOutlinePauseCircle
-              onClick={async () => await handleStopAudio()}
+              onClick={async (e) => {
+                e.preventDefault();
+                await handleStopAudio();
+              }}
             />
           ) : (
             <AiOutlinePlayCircle
-              onClick={async () => await handlePlayAudio()}
+              onClick={async (e) => {
+                e.preventDefault();
+                await handlePlayAudio();
+              }}
             />
           )}
         </div>
