@@ -23,25 +23,25 @@ const RightPanel: React.FC = () => {
   const { data } = useSession();
 
   return (
-    <div className="flex flex-col w-full p-4 rounded-lg bg-dark-containers">
+    <div className="flex w-full flex-col rounded-lg bg-dark-containers p-4">
       <Link href="/app/profile">
         <button className="flex">
           <div className="flex">
             <UserAvatar />
           </div>
-          <div className="flex mt-2">
-            <div className="flex flex-col ml-3">
-              <span className="overflow-hidden font-bold text-left text-gray-100 break-all">
+          <div className="mt-2 flex">
+            <div className="ml-3 flex flex-col">
+              <span className="overflow-hidden break-all text-left font-bold text-gray-100">
                 {data?.user?.name}
               </span>
-              <span className="text-left text-gray-300 break-all">
+              <span className="break-all text-left text-gray-300">
                 @{data?.user?.username}
               </span>
             </div>
           </div>
         </button>
       </Link>
-      <div className="flex mt-2">
+      <div className="mt-2 flex">
         <div className="flex py-1">
           <span className="font-bold text-gray-100">
             {nFormatter(data?.user?.followers || 0)}
@@ -55,7 +55,7 @@ const RightPanel: React.FC = () => {
           <span className="ml-1.5 lowercase text-gray-400">Following</span>
         </div>
       </div>
-      <div className="flex mt-1 text-left text-gray-200 break-words">
+      <div className="mt-1 flex break-words text-left text-gray-200">
         {data?.user?.description || "No description..."}
       </div>
       {data?.user?.website && <Website website={data?.user?.website} />}
