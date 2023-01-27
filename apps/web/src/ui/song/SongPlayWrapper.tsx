@@ -12,7 +12,7 @@ const SongPlayWrapper: React.FC<{
   className: string;
 }> = ({ children, previewUrl, className, ...rest }) => {
   // TODO: MAKE TOGGLE SWITCH IN SETTINGS
-  let enabledAutoPlay = false;
+  let enabledAutoPlay = true;
 
   const active = useTabActive();
   const audioRef = useRef<HTMLAudioElement>(null);
