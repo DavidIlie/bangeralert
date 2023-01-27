@@ -31,7 +31,7 @@ export const MiddlePanel: React.FC<{
 }> = ({ children, extra }) => {
   return (
     <div>
-      <div className="sticky top-0 flex flex-col flex-1 py-4 pt-10 bg-dark-bg">
+      <div className="sticky top-0 z-10 flex flex-1 flex-col bg-dark-bg py-4 pt-10">
         <MiddleHeader>{extra}</MiddleHeader>
       </div>
       <div className="px-4">{children}</div>

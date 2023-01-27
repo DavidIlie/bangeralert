@@ -64,7 +64,7 @@ const App: NextPage = () => {
           />
           <div>
             <div className="font-medium">
-              {song.name.length > 22 ? (
+              {song.name.length > 20 ? (
                 <>
                   <p className="text-md truncate md:text-xl">{song.name}</p>
                   <div className="flex items-center gap-0.5">

@@ -129,7 +129,7 @@ const SongPlayWrapper: React.FC<{
         clearTimeout(delayHandler);
         await handleStopAudio();
       }}
-      className={`${className}`}
+      className={`${className} relative`}
     >
       {previewUrl && (
         <audio ref={audioRef}>
@@ -137,7 +137,11 @@ const SongPlayWrapper: React.FC<{
         </audio>
       )}
       {!enabledAutoPlay && (
-        <div className={`cursor-pointer ${!previewUrl && "hidden"}`}>
+        <div
+          className={`cursor-pointer ${
+            !previewUrl && "hidden"
+          } absolute right-0 mt-2 mr-4`}
+        >
           {playingPreview ? (
             <AiOutlinePauseCircle
               onClick={async () => await handleStopAudio()}
