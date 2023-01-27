@@ -5,6 +5,9 @@ import { AppGrid } from "../ui/AppGrid";
 import { OverallResponsiveHeader } from "../ui/header/OverallResponsiveHeader";
 import { LeftPanel, MiddlePanel, RightPanel } from "./GridPanels";
 
+import MainRightPanel from "../ui/panels/RightPanel";
+import MainleftPanel from "../ui/panels/LeftPanel";
+
 export const AppLayout: React.FC<{
   rightPanel?: React.ReactNode;
   leftPanel?: React.ReactNode;
@@ -12,9 +15,9 @@ export const AppLayout: React.FC<{
   children: React.ReactNode;
   extraMiddleLayout?: React.ReactNode;
 }> = ({
-  rightPanel = <div />,
-  leftResponsivePanel = <div />,
-  leftPanel = <div />,
+  rightPanel = <MainRightPanel />,
+  leftResponsivePanel = <MainleftPanel small={true} />,
+  leftPanel = <MainleftPanel />,
   extraMiddleLayout,
   children,
 }) => {
@@ -51,14 +54,14 @@ export const AppLayout: React.FC<{
       break;
     case "fullscreen":
       components = (
-        <div className="w-full px-4 mt-4">
+        <div className="mt-4 w-full px-4">
           <OverallResponsiveHeader />
           {children}
         </div>
       );
   }
   return (
-    <div className="flex flex-col items-center w-full h-screen scrollbar-thin scrollbar-thumb-gray-700">
+    <div className="flex h-screen w-full flex-col items-center scrollbar-thin scrollbar-thumb-gray-700">
       <AppGrid>{components}</AppGrid>
     </div>
   );

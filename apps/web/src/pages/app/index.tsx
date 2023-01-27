@@ -4,11 +4,11 @@ import Link from "next/link";
 import type { NextPage } from "next";
 import { MdOutlineExplicit } from "react-icons/md";
 
-import DefaultLayout from "../../layouts/DefaultLayout";
 import { Button } from "../../ui/Button";
 import { api } from "../../lib/api";
 import SongPlayWrapper from "../../ui/song/SongPlayWrapper";
 import StarRating from "../../ui/StarRating";
+import { AppLayout } from "../../layouts/AppLayout";
 
 const App: NextPage = () => {
   const utils = api.useContext();
@@ -51,7 +51,7 @@ const App: NextPage = () => {
   );
 
   return (
-    <DefaultLayout
+    <AppLayout
       extraMiddleLayout={
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Your Feed</h1>
@@ -140,7 +140,7 @@ const App: NextPage = () => {
           </div>
         </SongPlayWrapper>
       ))}
-    </DefaultLayout>
+    </AppLayout>
   );
 };
 
