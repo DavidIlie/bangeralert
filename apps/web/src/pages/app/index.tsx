@@ -29,8 +29,6 @@ const App: NextPage = () => {
 
   const { data } = api.feed.getFeed.useQuery();
 
-  console.log(data);
-
   return (
     <DefaultLayout
       extraMiddleLayout={
