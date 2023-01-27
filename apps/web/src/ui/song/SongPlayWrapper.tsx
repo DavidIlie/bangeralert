@@ -28,8 +28,8 @@ const SongPlayWrapper: React.FC<{
 
   const pauseClientIfPlaying =
     api.spotify.ifCurrentlyListeningThenPauseSong.useMutation({
-      onSuccess: (data) => {
-        if (data) setHasPaused(true);
+      onSuccess: (result) => {
+        if (result) setHasPaused(true);
       },
     });
 
