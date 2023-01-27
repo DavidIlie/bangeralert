@@ -24,7 +24,7 @@ const SongPlayWrapper: React.FC<{
   className: string;
 }> = ({ children, previewUrl, className, songId, ...rest }) => {
   // TODO: MAKE TOGGLE SWITCH IN SETTINGS
-  let enabledAutoPlay = true;
+  let enabledAutoPlay = false;
   let enabledControlClient = true;
   let deviceId = "ae1df4d83625c1db6007e75ca736c7845d59eae9";
 

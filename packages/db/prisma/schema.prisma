@@ -16,29 +16,28 @@ model CommentOpinion {
   id        String         @id @default(uuid())
   type      CommentOptions
   commentId String
-  Comment   Comment        @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   Comment        @relation(fields: [commentId], references: [id], onDelete: Cascade)
   userId    String
-  User      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
   id             String           @id @default(uuid())
   comment        String
-  opinions       CommentOptions[]
   userId         String
   User           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   underReview    Boolean          @default(false)
   date           DateTime         @default(now())
-  CommentOpinion CommentOpinion[]
+  commentOpinion CommentOpinion[]
 
   songId String?
-  Song   Song?   @relation("commentSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
+  song   Song?   @relation("commentSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
 
   albumId String?
-  Album   Album?  @relation("commentAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
+  album   Album?  @relation("commentAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
 
   artistId String?
-  Artist   Artist? @relation("commentArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
+  artist   Artist? @relation("commentArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
 }
 
 model Star {
@@ -49,13 +48,13 @@ model Star {
   hidden Boolean @default(false)
 
   songId String?
-  Song   Song?   @relation("starSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
+  song   Song?   @relation("starSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
 
   albumId String?
-  Album   Album?  @relation("starAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
+  album   Album?  @relation("starAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
 
   artistId String?
-  Artist   Artist? @relation("starArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
+  artist   Artist? @relation("starArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
 }
 
 model Interaction {
@@ -66,13 +65,13 @@ model Interaction {
   User          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   songId String?
-  Song   Song?   @relation("interactionSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
+  song   Song?   @relation("interactionSong", fields: [songId], references: [spotify_id], onDelete: Cascade)
 
   albumId String?
-  Album   Album?  @relation("interactionAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
+  album   Album?  @relation("interactionAlbum", fields: [albumId], references: [spotify_id], onDelete: Cascade)
 
   artistId String?
-  Artist   Artist? @relation("interactionArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
+  artist   Artist? @relation("interactionArtist", fields: [artistId], references: [spotify_id], onDelete: Cascade)
 }
 
 model Artist {
@@ -92,9 +91,9 @@ model Artist {
 
   albums Album[]
 
-  Stars        Star[]        @relation("starArtist")
-  Comments     Comment[]     @relation("commentArtist")
-  Interactions Interaction[] @relation("interactionArtist")
+  stars        Star[]        @relation("starArtist")
+  comments     Comment[]     @relation("commentArtist")
+  interactions Interaction[] @relation("interactionArtist")
 }
 
 model Album {
@@ -113,9 +112,9 @@ model Album {
   artist Artist[]
   songs  Song[]
 
-  Stars        Star[]        @relation("starAlbum")
-  Comments     Comment[]     @relation("commentAlbum")
-  Interactions Interaction[] @relation("interactionAlbum")
+  stars        Star[]        @relation("starAlbum")
+  comments     Comment[]     @relation("commentAlbum")
+  interactions Interaction[] @relation("interactionAlbum")
 }
 
 model Song {
@@ -134,9 +133,9 @@ model Song {
 
   album Album[]
 
-  Stars        Star[]        @relation("starSong")
-  Comments     Comment[]     @relation("commentSong")
-  Interactions Interaction[] @relation("interactionSong")
+  stars        Star[]        @relation("starSong")
+  comments     Comment[]     @relation("commentSong")
+  interactions Interaction[] @relation("interactionSong")
 }
 
 enum FollowType {
@@ -200,10 +199,10 @@ model User {
   FollowSent     Follow[] @relation("ogUserFollow")
   FollowRecieved Follow[] @relation("targetUserFollow")
 
-  Interaction    Interaction[]
-  CommentOpinion CommentOpinion[]
-  Comment        Comment[]
-  Star           Star[]
+  interaction    Interaction[]
+  commentOpinion CommentOpinion[]
+  comment        Comment[]
+  star           Star[]
 }
 
 model VerificationToken {

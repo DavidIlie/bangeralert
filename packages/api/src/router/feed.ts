@@ -5,12 +5,19 @@ export const feedRouter = createTRPCRouter({
     return ctx.prisma.song.findMany({
       include: {
         album: {
-          include: { artist: { select: { id: true, name: true } } },
+          include: {
+            artist: { select: { id: true, name: true } },
+            comments: { include: { commentOpinion: true } },
+            stars: true,
+            interactions: {
+              where: { userId: ctx.session.user.id },
+            },
+          },
         },
         _count: {
           select: {
-            Comments: true,
-            Stars: true,
+            comments: true,
+            stars: true,
           },
         },
       },

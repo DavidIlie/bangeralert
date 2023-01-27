@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import * as React from "react";
+import Link from "next/link";
 import type { NextPage } from "next";
 import { MdOutlineExplicit } from "react-icons/md";
 
@@ -27,6 +28,8 @@ const App: NextPage = () => {
     });
 
   const { data } = api.feed.getFeed.useQuery();
+
+  console.log(data);
 
   return (
     <DefaultLayout
@@ -57,11 +60,18 @@ const App: NextPage = () => {
           songId={song.spotify_id}
           className="mb-3 flex w-full gap-4 rounded-lg bg-dark-containers px-2 py-3"
         >
-          <img
-            src={song.album[0]?.cover_url}
-            className="w-1/4 rounded-md"
-            alt={`${song.name}-cover`}
-          />
+          <a
+            href={song.external_url}
+            target="_blank"
+            rel="noreferrer"
+            className="w-1/4"
+          >
+            <img
+              src={song.album[0]?.cover_url}
+              className="rounded-md"
+              alt={`${song.name}-cover`}
+            />
+          </a>
           <div>
             <div className="font-medium">
               {song.name.length > 20 ? (
