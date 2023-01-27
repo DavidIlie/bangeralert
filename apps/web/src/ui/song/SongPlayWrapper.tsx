@@ -24,7 +24,7 @@ const SongPlayWrapper: React.FC<{
   className: string;
 }> = ({ children, previewUrl, className, songId, ...rest }) => {
   // TODO: MAKE TOGGLE SWITCH IN SETTINGS
-  let enabledAutoPlay = false;
+  let enabledAutoPlay = true;
   let enabledControlClient = true;
   let deviceId = "ae1df4d83625c1db6007e75ca736c7845d59eae9";
 
@@ -67,7 +67,7 @@ const SongPlayWrapper: React.FC<{
         audio.volume = 0.6;
         if (playHead?.url === playPreview) audio.currentTime = playHead.time;
         setPlayHead({ url: playPreview || "", time: 0 });
-        setSongId(songId);
+        if (!enabledAutoPlay) setSongId(songId);
         audio.play();
       }
       if (playPreview === null) {
