@@ -28,8 +28,17 @@ export const getAccessToken = async (
 export const makeRequest = async (
   path: string,
   accessToken: string,
+  method = "GET" as
+    | "POST"
+    | "GET"
+    | "PUT"
+    | "PATCH"
+    | "DELETE"
+    | "OPTIONS"
+    | "HEAD",
 ): Promise<Response> =>
   await fetch(`https://api.spotify.com/v1/${path}`, {
+    method,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": `application/json`,

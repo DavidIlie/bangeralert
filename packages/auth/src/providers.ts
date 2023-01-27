@@ -60,6 +60,7 @@ export const getData = (provider: keyof typeof nativeProviders): ProviderType =>
         "user-library-read",
         "user-read-playback-state",
         "user-read-currently-playing",
+        "user-modify-playback-state",
       ],
     },
   }[provider]);

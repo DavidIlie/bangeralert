@@ -18,22 +18,59 @@ export const spotifyRouter = createTRPCRouter({
       return true;
     }),
   createCurrentlyListening: spotifyProcedure.mutation(async ({ ctx }) => {
-    const response = await (
-      await makeRequest(`me/player`, ctx.spotifyToken)
-    ).json();
-
-    let song;
     try {
-      song = parseSong(response.item);
+      const response = await (
+        await makeRequest(`me/player`, ctx.spotifyToken)
+      ).json();
+
+      const song = parseSong(response.item);
+      await addSongById(song.spotify_id, ctx.spotifyToken);
+
+      return true;
     } catch (error) {
       throw new TRPCError({
         message: "You are not playing any song!!",
         code: "BAD_REQUEST",
       });
     }
+  }),
+  ifCurrentlyListeningThenPauseSong: spotifyProcedure
+    .input(z.object({ deviceId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const response = await (
+          await makeRequest(`me/player`, ctx.spotifyToken)
+        ).json();
 
-    await addSongById(song.spotify_id, ctx.spotifyToken);
+        if (response.device.id !== input.deviceId) return true;
+        if (response.item === null) return true;
+        if (!response.is_playing) return true;
+        await makeRequest(`me/player/pause`, ctx.spotifyToken, "PUT");
+      } catch (error) {
+        return true;
+      }
 
-    return true;
+      return true;
+    }),
+  resumePlayback: spotifyProcedure
+    .input(z.object({ deviceId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const response = await (
+          await makeRequest(`me/player`, ctx.spotifyToken)
+        ).json();
+
+        if (response.device.id !== input.deviceId) return true;
+        if (response.item === null) return true;
+        if (response.is_playing) return true;
+        await makeRequest(`me/player/play`, ctx.spotifyToken, "PUT");
+      } catch (error) {
+        return true;
+      }
+
+      return true;
+    }),
+  currentListening: spotifyProcedure.query(async ({ ctx }) => {
+    return await (await makeRequest(`me/player`, ctx.spotifyToken)).json();
   }),
 });
