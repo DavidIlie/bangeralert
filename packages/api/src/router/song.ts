@@ -30,6 +30,9 @@ export const songRouter = createTRPCRouter({
         });
       }
 
+      if (input.rating === 0)
+        return await ctx.prisma.star.delete({ where: { id: star.id } });
+
       return await ctx.prisma.star.update({
         where: { id: star.id },
         data: { rating: input.rating },
