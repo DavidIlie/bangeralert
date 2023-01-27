@@ -3,7 +3,6 @@ import * as React from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { MdOutlineExplicit } from "react-icons/md";
-import { BsChevronDoubleRight } from "react-icons/bs";
 
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { Button } from "../../ui/Button";
