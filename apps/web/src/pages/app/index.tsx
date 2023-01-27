@@ -54,6 +54,7 @@ const App: NextPage = () => {
         <SongPlayWrapper
           previewUrl={song.preview_url}
           key={song.id}
+          songId={song.spotify_id}
           className="mb-3 flex w-full gap-4 rounded-lg bg-dark-containers px-2 py-3"
         >
           <img

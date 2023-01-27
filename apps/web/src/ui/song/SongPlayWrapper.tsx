@@ -9,10 +9,11 @@ import useTabActive from "../../hooks/useTabActive";
 const SongPlayWrapper: React.FC<{
   children: React.ReactNode;
   previewUrl: string | null;
+  songId: string;
   className: string;
-}> = ({ children, previewUrl, className, ...rest }) => {
+}> = ({ children, previewUrl, className, songId, ...rest }) => {
   // TODO: MAKE TOGGLE SWITCH IN SETTINGS
-  let enabledAutoPlay = true;
+  let enabledAutoPlay = false;
   let enabledControlClient = true;
   let deviceId = "ae1df4d83625c1db6007e75ca736c7845d59eae9";
 
@@ -28,12 +29,11 @@ const SongPlayWrapper: React.FC<{
 
   const [playingPreview, setPlayingPreview] = useState(false);
 
-  const pauseClientIfPlaying =
-    api.spotify.ifCurrentlyListeningThenPauseSong.useMutation({
-      onSuccess: (result) => {
-        if (result) setHasPaused(true);
-      },
-    });
+  const pauseClientIfPlaying = api.spotify.pauseClientIfPlaying.useMutation({
+    onSuccess: (result) => {
+      if (result) setHasPaused(true);
+    },
+  });
 
   const resumeClient = api.spotify.resumePlayback.useMutation();
 
@@ -62,15 +62,21 @@ const SongPlayWrapper: React.FC<{
   const handlePlayAudio = async () => {
     if (previewUrl && active) {
       resumeClient.reset();
-      if (enabledControlClient)
-        await pauseClientIfPlaying.mutateAsync({
+      let shouldChangeState = false;
+      if (enabledControlClient) {
+        const response = await pauseClientIfPlaying.mutateAsync({
           deviceId,
+          songId,
         });
-      setPlayPreview(previewUrl);
+        shouldChangeState = response;
+      }
+      if (shouldChangeState) return setPlayPreview(previewUrl);
+      if (shouldChangeState) setPlayingPreview(true);
     }
   };
 
   const handleStopAudio = async () => {
+    setPlayingPreview(false);
     if (hasPaused)
       if (enabledControlClient)
         await resumeClient.mutateAsync({
@@ -108,17 +114,11 @@ const SongPlayWrapper: React.FC<{
         <div className="cursor-pointer">
           {playingPreview ? (
             <AiOutlinePauseCircle
-              onClick={async () => {
-                await handleStopAudio();
-                setPlayingPreview(false);
-              }}
+              onClick={async () => await handleStopAudio()}
             />
           ) : (
             <AiOutlinePlayCircle
-              onClick={async () => {
-                handlePlayAudio();
-                setPlayingPreview(true);
-              }}
+              onClick={async () => await handlePlayAudio()}
             />
           )}
         </div>

@@ -34,8 +34,8 @@ export const spotifyRouter = createTRPCRouter({
       });
     }
   }),
-  ifCurrentlyListeningThenPauseSong: spotifyProcedure
-    .input(z.object({ deviceId: z.string() }))
+  pauseClientIfPlaying: spotifyProcedure
+    .input(z.object({ deviceId: z.string(), songId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const response = await (
@@ -44,7 +44,9 @@ export const spotifyRouter = createTRPCRouter({
 
         if (response.device.id !== input.deviceId) return false;
         if (response.item === null) return false;
+        if (response.item.id === input.songId) return false;
         if (!response.is_playing) return false;
+
         await makeRequest(`me/player/pause`, ctx.spotifyToken, "PUT");
       } catch (error) {
         return false;
