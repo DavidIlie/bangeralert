@@ -42,12 +42,12 @@ export const spotifyRouter = createTRPCRouter({
           await makeRequest(`me/player`, ctx.spotifyToken)
         ).json();
 
-        if (response.device.id !== input.deviceId) return true;
-        if (response.item === null) return true;
-        if (!response.is_playing) return true;
+        if (response.device.id !== input.deviceId) return false;
+        if (response.item === null) return false;
+        if (!response.is_playing) return false;
         await makeRequest(`me/player/pause`, ctx.spotifyToken, "PUT");
       } catch (error) {
-        return true;
+        return false;
       }
 
       return true;
