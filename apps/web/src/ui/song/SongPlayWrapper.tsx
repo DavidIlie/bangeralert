@@ -140,7 +140,7 @@ const SongPlayWrapper: React.FC<{
         <div
           className={`cursor-pointer ${
             !previewUrl && "hidden"
-          } absolute right-0 mt-2 mr-4`}
+          } absolute right-0 mt-2 mr-4 text-xl`}
         >
           {playingPreview ? (
             <AiOutlinePauseCircle
