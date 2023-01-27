@@ -13,6 +13,7 @@ const SongPlayWrapper: React.FC<{
 }> = ({ children, previewUrl, className, ...rest }) => {
   // TODO: MAKE TOGGLE SWITCH IN SETTINGS
   let enabledAutoPlay = true;
+  let enabledControlClient = true;
 
   const active = useTabActive();
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -60,20 +61,22 @@ const SongPlayWrapper: React.FC<{
   const handlePlayAudio = async () => {
     if (previewUrl && active) {
       resumeClient.reset();
-      await pauseClientIfPlaying.mutateAsync({
-        // self device ID for test
-        deviceId: "ae1df4d83625c1db6007e75ca736c7845d59eae9",
-      });
+      if (enabledControlClient)
+        await pauseClientIfPlaying.mutateAsync({
+          // self device ID for test
+          deviceId: "ae1df4d83625c1db6007e75ca736c7845d59eae9",
+        });
       setPlayPreview(previewUrl);
     }
   };
 
   const handleStopAudio = async () => {
     if (hasPaused)
-      await resumeClient.mutateAsync({
-        // self device ID for test
-        deviceId: "ae1df4d83625c1db6007e75ca736c7845d59eae9",
-      });
+      if (enabledControlClient)
+        await resumeClient.mutateAsync({
+          // self device ID for test
+          deviceId: "ae1df4d83625c1db6007e75ca736c7845d59eae9",
+        });
     setHasPaused(false);
     setPlayPreview(null);
   };
