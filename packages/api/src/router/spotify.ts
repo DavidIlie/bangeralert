@@ -18,21 +18,23 @@ export const spotifyRouter = createTRPCRouter({
       return true;
     }),
   createCurrentlyListening: spotifyProcedure.mutation(async ({ ctx }) => {
+    let response;
+
     try {
-      const response = await (
+      response = await (
         await makeRequest(`me/player`, ctx.spotifyToken)
       ).json();
-
-      const song = parseSong(response.item);
-      await addSongById(song.spotify_id, ctx.spotifyToken);
-
-      return true;
     } catch (error) {
       throw new TRPCError({
         message: "You are not playing any song!!",
         code: "BAD_REQUEST",
       });
     }
+
+    const song = parseSong(response.item);
+    await addSongById(song.spotify_id, ctx.spotifyToken);
+
+    return true;
   }),
   pauseClientIfPlaying: spotifyProcedure
     .input(z.object({ deviceId: z.string(), songId: z.string() }))

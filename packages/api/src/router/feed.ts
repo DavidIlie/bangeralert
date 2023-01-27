@@ -15,6 +15,7 @@ export const feedRouter = createTRPCRouter({
           },
           comments: { include: { commentOpinion: true } },
           stars: true,
+          artist: true,
           _count: {
             select: {
               comments: true,

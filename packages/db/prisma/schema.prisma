@@ -90,6 +90,7 @@ model Artist {
   lastUpdated DateTime @default(now())
 
   albums Album[]
+  songs  Song[]
 
   stars        Star[]        @relation("starArtist")
   comments     Comment[]     @relation("commentArtist")
@@ -131,7 +132,8 @@ model Song {
   created     DateTime @default(now())
   lastUpdated DateTime @default(now())
 
-  album Album[]
+  album  Album[]
+  artist Artist[]
 
   stars        Star[]        @relation("starSong")
   comments     Comment[]     @relation("commentSong")

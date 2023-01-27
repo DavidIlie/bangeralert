@@ -43,8 +43,8 @@ const App: NextPage = () => {
         <p className={transition}>{song.album[0]?.name}</p>
       </Link>
       <div className="mx-0.5">-</div>
-      <Link href={`/artist/${song.album[0]?.artist[0]?.id}`}>
-        <p className={transition}>{song.album[0]?.artist[0]?.name}</p>
+      <Link href={`/artist/${song.artist[0]?.id}`}>
+        <p className={transition}>{song.artist[0]?.name}</p>
       </Link>
       )
     </div>
