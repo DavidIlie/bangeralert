@@ -116,17 +116,11 @@ const SongPlayWrapper: React.FC<{
         <div className="cursor-pointer">
           {playingPreview ? (
             <AiOutlinePauseCircle
-              onClick={async (e) => {
-                e.preventDefault();
-                await handleStopAudio();
-              }}
+              onClick={async () => await handleStopAudio()}
             />
           ) : (
             <AiOutlinePlayCircle
-              onClick={async (e) => {
-                e.preventDefault();
-                await handlePlayAudio();
-              }}
+              onClick={async (e) => await handlePlayAudio()}
             />
           )}
         </div>
