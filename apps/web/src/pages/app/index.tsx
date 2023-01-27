@@ -14,19 +14,17 @@ const App: NextPage = () => {
   const utils = api.useContext();
 
   const createSongMutation = api.spotify.create.useMutation({
-    onSuccess: (data) => {
-      utils.feed.getFeed.invalidate();
-      console.log(data);
-    },
+    onSuccess: () => utils.feed.getFeed.invalidate(),
   });
 
   const createSelfSongMutation =
     api.spotify.createCurrentlyListening.useMutation({
-      onSuccess: (data) => {
-        utils.feed.getFeed.invalidate();
-        console.log(data);
-      },
+      onSuccess: () => utils.feed.getFeed.invalidate(),
     });
+
+  const giveRating = api.song.addRating.useMutation({
+    onSuccess: () => utils.feed.getFeed.invalidate(),
+  });
 
   const { data } = api.feed.getFeed.useQuery();
 
@@ -120,6 +118,23 @@ const App: NextPage = () => {
                 stars={song._stars}
                 starDimension="35px"
                 starSpacing="5px"
+                className="cursor-pointer"
+                onClick={() => {
+                  const ratingPrompt = prompt("what do u think of this song");
+                  if (!ratingPrompt) return alert("wtf man");
+
+                  let rating = 0;
+                  try {
+                    rating = parseInt(ratingPrompt);
+                  } catch (error) {}
+
+                  if (rating > 5 || rating < 0) return alert("wtf man");
+
+                  giveRating.mutate({
+                    songId: song.id,
+                    rating,
+                  });
+                }}
               />
             </div>
           </div>

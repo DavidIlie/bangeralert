@@ -8,15 +8,18 @@ const StarRating: React.FC<{
   className?: string;
   starDimension?: string;
   starSpacing?: string;
-}> = ({ stars, className, ...rest }) => {
+  onClick: () => void;
+}> = ({ stars, className, starDimension, starSpacing, onClick, ...rest }) => {
   return (
-    <StarRatings
-      rating={stars}
-      numberOfStars={5}
-      className={className}
-      starRatedColor="#eab308"
-      {...rest}
-    />
+    <div className={className} {...rest} onClick={onClick}>
+      <StarRatings
+        rating={stars}
+        numberOfStars={5}
+        starDimension={starDimension}
+        starRatedColor="#eab308"
+        starSpacing={starSpacing}
+      />
+    </div>
   );
 };
 
