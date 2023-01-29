@@ -32,7 +32,6 @@ const CreateByURL: React.FC = () => {
       if (!doesSongAlreadyExist) {
         return setHasReview(false);
       }
-
       let id;
       try {
         id = (songData as any).id;
