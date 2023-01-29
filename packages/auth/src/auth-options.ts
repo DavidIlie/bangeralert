@@ -93,6 +93,8 @@ export const authOptions: NextAuthOptions = {
 
         session.user.followers = followData?._count.FollowRecieved as number;
         session.user.following = followData?._count.FollowSent as number;
+
+        session.user.tags = user.tags as string[];
       }
 
       return session;

@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 
 import { nFormatter } from "../../lib/nFormatter";
 import UserAvatar from "../UserAvatar";
+import ProfileTags from "../tags/ProfileTags";
 
 const regex = /(^\w+:|^)\/\//;
 
@@ -37,6 +38,7 @@ const RightPanel: React.FC = () => {
               <span className="break-all text-left text-gray-300">
                 @{data?.user?.username}
               </span>
+              <ProfileTags />
             </div>
           </div>
         </button>
