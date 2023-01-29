@@ -197,6 +197,7 @@ model User {
   username    String?
   description String?
   website     String?
+  tags        String[]
 
   FollowSent     Follow[] @relation("ogUserFollow")
   FollowRecieved Follow[] @relation("targetUserFollow")

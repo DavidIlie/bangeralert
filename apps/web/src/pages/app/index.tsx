@@ -13,15 +13,6 @@ import { AppLayout } from "../../layouts/AppLayout";
 const App: NextPage = () => {
   const utils = api.useContext();
 
-  const createSongMutation = api.spotify.create.useMutation({
-    onSuccess: () => utils.feed.getFeed.invalidate(),
-  });
-
-  const createSelfSongMutation =
-    api.spotify.createCurrentlyListening.useMutation({
-      onSuccess: () => utils.feed.getFeed.invalidate(),
-    });
-
   const giveRating = api.song.addRating.useMutation({
     onSuccess: () => utils.feed.getFeed.invalidate(),
   });
@@ -56,18 +47,9 @@ const App: NextPage = () => {
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Your Feed</h1>
           <div className="flex items-center gap-1">
-            <Button
-              onClick={() => {
-                let url = prompt("pls enter spotify song url");
-                if (!url) return alert("wtf man");
-                createSongMutation.mutate({ url: url! });
-              }}
-            >
-              New Song
-            </Button>
-            <Button onClick={() => createSelfSongMutation.mutate()}>
-              Song (wiap)
-            </Button>
+            <Link href="/app/new-song">
+              <Button>New Song</Button>
+            </Link>
           </div>
         </div>
       }

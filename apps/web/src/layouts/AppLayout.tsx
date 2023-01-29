@@ -13,7 +13,7 @@ export const AppLayout: React.FC<{
   leftPanel?: React.ReactNode;
   leftResponsivePanel?: React.ReactNode;
   children: React.ReactNode;
-  extraMiddleLayout?: React.ReactNode;
+  extraMiddleLayout?: React.ReactNode | React.ReactNode[];
 }> = ({
   rightPanel = <MainRightPanel />,
   leftResponsivePanel = <MainleftPanel small={true} />,

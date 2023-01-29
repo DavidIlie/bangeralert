@@ -26,7 +26,7 @@ const PanelElement: React.FC<defaultDivProps & { selected?: boolean }> = ({
 }) => {
   const styles = selected
     ? "bg-dark-containers bg-opacity-50"
-    : "px-4 hover:bg-dark-containers hover:bg-opacity-30 duration-150 cursor-pointer";
+    : "px-4 hover:bg-dark-containers hover:bg-opacity-40 duration-150 cursor-pointer";
   return (
     <div
       {...rest}
