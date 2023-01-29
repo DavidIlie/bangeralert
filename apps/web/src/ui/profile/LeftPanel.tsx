@@ -9,6 +9,7 @@ const LeftPanel: React.FC<{ small?: boolean }> = () => {
       <PanelElement selected>Profile</PanelElement>
       <PanelElement>Account</PanelElement>
       <PanelElement>Security & Privacy</PanelElement>
+      <PanelElement>Song Genres</PanelElement>
       <PanelBorder />
       <PanelTitle>APP SETTINGS</PanelTitle>
       <PanelElement>Appearance</PanelElement>
