@@ -39,7 +39,7 @@ const PanelElement: React.FC<defaultDivProps & { selected?: boolean }> = ({
 };
 
 const PanelTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <h1 className="mb-1 text-gray-500">{children}</h1>
+  <h1 className="mb-1 text-lg font-semibold text-gray-500">{children}</h1>
 );
 
 const PanelBorder: React.FC = () => (

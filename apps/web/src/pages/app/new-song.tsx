@@ -7,6 +7,8 @@ import TabOption from "../../ui/tab/TabOption";
 import TabBody from "../../ui/tab/TabBody";
 import { api } from "../../lib/api";
 
+import CreateByURL from "../../ui/song/create/CreateByURL";
+
 const NewSong: NextPage = () => {
   const [tab, setTab] = useState(1);
 
@@ -46,10 +48,8 @@ const NewSong: NextPage = () => {
             By Playlist
           </TabOption>
         </div>
-        <TabBody current={tab}>
-          <div>
-            <h1>1</h1>
-          </div>
+        <TabBody current={tab} className="mt-3">
+          <CreateByURL />
           <div>
             <h1>2</h1>
           </div>

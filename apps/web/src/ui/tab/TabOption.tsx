@@ -24,8 +24,7 @@ const TabOption: React.FC<
       ? "bg-opacity-50"
       : "hover:bg-opacity-50 duration-150 cursor-pointer";
   const disabledClass =
-    disabled &&
-    "bg-dark-containers bg-opacity-10 cursor-not-allowed hover:bg-opacity-10";
+    disabled && "bg-dark-containers cursor-not-allowed hover:bg-opacity-90";
 
   useEffect(() => {
     if (self === current && disabled) updateTab(1);

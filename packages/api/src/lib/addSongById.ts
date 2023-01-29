@@ -3,7 +3,7 @@ import { makeRequest, parseSong } from "./spotify";
 
 import { prisma } from "@acme/db";
 
-const getArtistData = async (artist: any, token: string) => {
+export const getArtistData = async (artist: any, token: string) => {
   let r = await makeRequest(`artists/${artist.spotify_id}`, token);
   let extra = {};
   if (r.status === 200) {

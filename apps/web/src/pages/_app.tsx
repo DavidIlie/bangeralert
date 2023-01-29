@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
 import { DefaultSeo } from "next-seo";
+import NextNprogress from "nextjs-progressbar";
+import { MantineProvider, LoadingOverlay } from "@mantine/core";
 
 import "../styles/globals.css";
 import { api } from "../lib/api";
+import { useLoadingStore } from "../stores/useLoadingStore";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -15,8 +18,18 @@ const MyApp: AppType<{ session: Session | null }> = ({
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  const { loading } = useLoadingStore();
+
   return (
     <>
+      <NextNprogress
+        color="#156896"
+        startPosition={0.3}
+        stopDelayMs={200}
+        height={3}
+        showOnShallow={true}
+      />
       <DefaultSeo
         defaultTitle="BangerAlert"
         titleTemplate="%s | BangerAlert"
@@ -33,11 +46,20 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }}
         description="Yet another app to share music with your friends"
       />
-      <SessionProvider session={session}>
-        <div className="flex flex-col min-h-screen text-white bg-dark-bg">
-          {hasLoaded && <Component {...pageProps} />}
-        </div>
-      </SessionProvider>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          colorScheme: "dark",
+        }}
+      >
+        <SessionProvider session={session}>
+          <div className="flex min-h-screen flex-col bg-dark-bg text-white">
+            <LoadingOverlay visible={loading} className="fixed" />
+            {hasLoaded && <Component {...pageProps} />}
+          </div>
+        </SessionProvider>
+      </MantineProvider>
     </>
   );
 };

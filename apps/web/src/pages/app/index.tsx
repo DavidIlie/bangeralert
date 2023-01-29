@@ -2,44 +2,14 @@
 import * as React from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
-import { MdOutlineExplicit } from "react-icons/md";
 
 import { Button } from "../../ui/Button";
 import { api } from "../../lib/api";
-import SongPlayWrapper from "../../ui/song/SongPlayWrapper";
-import StarRating from "../../ui/StarRating";
 import { AppLayout } from "../../layouts/AppLayout";
+import Song from "../../ui/song";
 
 const App: NextPage = () => {
-  const utils = api.useContext();
-
-  const giveRating = api.song.addRating.useMutation({
-    onSuccess: () => utils.feed.getFeed.invalidate(),
-  });
-
   const { data } = api.feed.getFeed.useQuery();
-
-  const transition = "hover:text-blue-500 duration-150";
-
-  const songName = (song: any) => (
-    <Link href={`/song/${song.id}`}>
-      <p className={`text-md truncate md:text-xl ${transition}`}>{song.name}</p>
-    </Link>
-  );
-
-  const songExtraDetails = (song: any) => (
-    <div className="flex text-xs text-gray-300">
-      (
-      <Link href={`/album/${song.album[0]?.id}`}>
-        <p className={transition}>{song.album[0]?.name}</p>
-      </Link>
-      <div className="mx-0.5">-</div>
-      <Link href={`/artist/${song.artist[0]?.id}`}>
-        <p className={transition}>{song.artist[0]?.name}</p>
-      </Link>
-      )
-    </div>
-  );
 
   return (
     <AppLayout
@@ -55,72 +25,7 @@ const App: NextPage = () => {
       }
     >
       {data?.map((song) => (
-        <SongPlayWrapper
-          previewUrl={song.preview_url}
-          key={song.id}
-          songId={song.spotify_id}
-          className="mb-3 flex w-full gap-4 rounded-lg bg-dark-containers px-2 py-3"
-        >
-          <a
-            href={song.external_url}
-            target="_blank"
-            rel="noreferrer"
-            className="w-1/4"
-          >
-            <img
-              src={song.album[0]?.cover_url}
-              className="rounded-md"
-              alt={`${song.name}-cover`}
-            />
-          </a>
-          <div>
-            <div className="font-medium">
-              {song.name.length > 20 ? (
-                <>
-                  {songName(song)}
-                  <div className="flex items-center gap-0.5">
-                    {songExtraDetails(song)}
-                    {song.explicit && (
-                      <MdOutlineExplicit className="mt-[0.05rem] text-gray-300" />
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center gap-1">
-                  {songName(song)}
-                  <div className="mt-[0.2rem]">{songExtraDetails(song)}</div>
-                  {song.explicit && (
-                    <MdOutlineExplicit className="mt-1 text-gray-300" />
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="mt-2">
-              <StarRating
-                stars={song._stars}
-                starDimension="35px"
-                starSpacing="5px"
-                className="cursor-pointer"
-                onClick={() => {
-                  const ratingPrompt = prompt("what do u think of this song");
-                  if (!ratingPrompt) return alert("wtf man");
-
-                  let rating = 0;
-                  try {
-                    rating = parseInt(ratingPrompt);
-                  } catch (error) {}
-
-                  if (rating > 5 || rating < 0) return alert("wtf man");
-
-                  giveRating.mutate({
-                    songId: song.id,
-                    rating,
-                  });
-                }}
-              />
-            </div>
-          </div>
-        </SongPlayWrapper>
+        <Song song={song} key={song.id} />
       ))}
     </AppLayout>
   );

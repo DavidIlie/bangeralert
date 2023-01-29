@@ -7,5 +7,5 @@ import {
 
 export interface defaultDivProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  children: ReactNode;
+  children?: ReactNode;
 }

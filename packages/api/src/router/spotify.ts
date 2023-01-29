@@ -4,17 +4,13 @@ import { spotifyProcedure, createTRPCRouter } from "../trpc";
 
 import { addSongById } from "../lib/addSongById";
 import { makeRequest, parseSong } from "../lib/spotify";
+import { basicIncludeForSong, getStarAvg } from "./feed";
 
 export const spotifyRouter = createTRPCRouter({
   create: spotifyProcedure
-    .input(z.object({ url: z.string() }))
+    .input(z.object({ songId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const songId = input.url
-        .split("https://open.spotify.com/track/")[1]
-        ?.split("?si=")[0];
-
-      await addSongById(songId, ctx.spotifyToken);
-
+      await addSongById(input.songId, ctx.spotifyToken);
       return true;
     }),
   createCurrentlyListening: spotifyProcedure.mutation(async ({ ctx }) => {
@@ -79,4 +75,32 @@ export const spotifyRouter = createTRPCRouter({
   currentListening: spotifyProcedure.query(async ({ ctx }) => {
     return await (await makeRequest(`me/player`, ctx.spotifyToken)).json();
   }),
+  getSong: spotifyProcedure
+    .input(z.object({ url: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      let songId;
+      try {
+        songId = input.url
+          .split("https://open.spotify.com/track/")[1]
+          ?.split("?si=")[0];
+      } catch (error) {
+        throw new TRPCError({
+          message: "wrong URL format!",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      const prismaSong = await ctx.prisma.song.findFirst({
+        where: { spotify_id: songId },
+        include: basicIncludeForSong(ctx.session.user.id),
+      });
+
+      if (prismaSong) {
+        return getStarAvg<typeof prismaSong>(prismaSong);
+      }
+
+      return parseSong(
+        await (await makeRequest(`tracks/${songId}`, ctx.spotifyToken)).json(),
+      );
+    }),
 });

@@ -96,4 +96,6 @@ const enforceSpotifyToken = t.middleware(({ ctx, next }) => {
   });
 });
 
-export const spotifyProcedure = t.procedure.use(enforceSpotifyToken);
+export const spotifyProcedure = t.procedure
+  .use(enforceUserIsAuthed)
+  .use(enforceSpotifyToken);
