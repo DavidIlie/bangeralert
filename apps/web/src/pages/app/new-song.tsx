@@ -14,7 +14,8 @@ const NewSong: NextPage = () => {
 
   const { data, refetch } = api.spotify.currentListening.useQuery();
 
-  const shouldByCurrentBeDisabled = data ? !data?.is_playing : false;
+  const shouldByCurrentBeDisabled =
+    data === false ? true : data ? data!.is_playing : false;
 
   return (
     <>
