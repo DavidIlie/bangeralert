@@ -9,12 +9,13 @@ import { api } from "../../lib/api";
 
 import CreateByURL from "../../ui/song/create/CreateByURL";
 import { useCreateReviewStore } from "../../stores/useCreateReviewStore";
+import CreateByCurrentListening from "../../ui/song/create/CreateByCurrentListening";
 
 const NewSong: NextPage = () => {
   const [tab, setTab] = useState(1);
   const { reset } = useCreateReviewStore();
 
-  const { data, refetch } = api.spotify.currentListening.useQuery();
+  const { data, refetch } = api.spotify.currentListeningBoolean.useQuery();
 
   const shouldByCurrentBeDisabled =
     typeof data !== "object" ? true : !data!.is_playing;
@@ -55,9 +56,7 @@ const NewSong: NextPage = () => {
         </div>
         <TabBody current={tab} className="mt-3">
           <CreateByURL />
-          <div>
-            <h1>2</h1>
-          </div>
+          <CreateByCurrentListening />
           <div>
             <h1>3</h1>
           </div>

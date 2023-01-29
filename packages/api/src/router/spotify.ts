@@ -72,9 +72,36 @@ export const spotifyRouter = createTRPCRouter({
 
       return true;
     }),
-  currentListening: spotifyProcedure.query(async ({ ctx }) => {
+  currentListeningBoolean: spotifyProcedure.query(async ({ ctx }) => {
     try {
-      return await (await makeRequest(`me/player`, ctx.spotifyToken)).json();
+      const response = await (
+        await makeRequest(`me/player`, ctx.spotifyToken)
+      ).json();
+      return {
+        is_playing: response.is_playing,
+      };
+    } catch (error) {
+      return false;
+    }
+  }),
+  currentlyListening: spotifyProcedure.mutation(async ({ ctx }) => {
+    try {
+      const response = await (
+        await makeRequest(`me/player`, ctx.spotifyToken)
+      ).json();
+
+      const song = parseSong((response as any).item);
+
+      const prismaSong = await ctx.prisma.song.findFirst({
+        where: { spotify_id: song.spotify_id },
+        include: basicIncludeForSong(ctx.session.user.id),
+      });
+
+      if (prismaSong) {
+        return getStarAvg<typeof prismaSong>(prismaSong);
+      }
+
+      return parseSong((response as any).item);
     } catch (error) {
       return false;
     }

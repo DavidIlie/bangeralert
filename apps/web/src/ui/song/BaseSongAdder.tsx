@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import Song, { BaseSong } from ".";
@@ -15,8 +17,14 @@ const BaseSongAdder: React.FC<{
   const { push } = useRouter();
   const { toggleLoading } = useLoadingStore();
 
-  const { hasReview, selfReview, setSelfReview, setHasReview, ogReview } =
-    useCreateReviewStore();
+  const {
+    hasReview,
+    selfReview,
+    setSelfReview,
+    setHasReview,
+    ogReview,
+    setOgReview,
+  } = useCreateReviewStore();
 
   const addReview = api.song.addRating.useMutation({
     onSuccess: () => {
@@ -35,6 +43,13 @@ const BaseSongAdder: React.FC<{
   });
 
   const doesSongAlreadyExist = song !== null && (song as any)._stars;
+
+  useEffect(() => {
+    if (doesSongAlreadyExist) {
+      setSelfReview((song as any)._stars);
+      setOgReview((song as any)._stars);
+    }
+  }, []);
 
   return (
     <div>
