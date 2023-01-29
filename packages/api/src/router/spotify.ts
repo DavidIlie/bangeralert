@@ -10,8 +10,8 @@ export const spotifyRouter = createTRPCRouter({
   create: spotifyProcedure
     .input(z.object({ songId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await addSongById(input.songId, ctx.spotifyToken);
-      return true;
+      const id = await addSongById(input.songId, ctx.spotifyToken);
+      return id;
     }),
   createCurrentlyListening: spotifyProcedure.mutation(async ({ ctx }) => {
     let response;

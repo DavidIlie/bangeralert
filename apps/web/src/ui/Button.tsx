@@ -8,7 +8,7 @@ import { Spinner } from "./Spinner";
 
 const colorClassnames = {
   primary:
-    "rounded py-2 px-4 transition duration-150 ease-in-out bg-blue-800 hover:bg-blue-900 disabled:bg-blue-900 disabled:bg-opacity-30 disabled:hover:bg-opacity-50 disabled:bg-dark-containers disabled:border border-blue-500 border border-blue-800 hover:border-blue-900 border-blue-500 disabled:border-opacity-50",
+    "rounded py-2 px-4 transition duration-150 ease-in-out bg-blue-800 hover:bg-blue-900 disabled:bg-blue-900 disabled:bg-opacity-30 disabled:hover:bg-opacity-50 disabled:bg-dark-containers border-blue-500 border border-blue-800 hover:border-blue-900 border-blue-500 disabled:border-none",
   secondary:
     "rounded py-2 px-4 transition duration-150 ease-in-out bg-red-800 hover:bg-red-900 disabled:bg-dark-containers disabled:border border-red-500 border border-red-800 hover:border-red-900 border-red-500 disabled:border-red-200",
   transparent:

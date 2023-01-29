@@ -8,6 +8,7 @@ import SongPlayWrapper from "./SongPlayWrapper";
 import { MdOutlineExplicit } from "react-icons/md";
 import StarRating from "../StarRating";
 import { SongResponseType } from "@acme/api/src/lib/spotify";
+import SongStars from "./SongStars";
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 export type SongType = Unpacked<RouterOutputs["feed"]["getFeed"]>;
@@ -122,11 +123,8 @@ const Song: React.FC<
       {...rest}
     >
       <div className="mt-2">
-        <StarRating
+        <SongStars
           stars={song._stars}
-          starDimension="35px"
-          starSpacing="5px"
-          className="cursor-pointer"
           onClick={() => {
             if (disableSelfReview) return;
 

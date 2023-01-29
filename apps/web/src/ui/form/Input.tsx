@@ -20,7 +20,7 @@ const Input: React.FC<Types> = ({
   required,
   className,
   color = "dark-containers",
-  border = "dark-bg",
+  border = "gray-900",
   ...rest
 }): JSX.Element => {
   return (

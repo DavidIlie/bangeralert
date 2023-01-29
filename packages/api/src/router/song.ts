@@ -38,4 +38,21 @@ export const songRouter = createTRPCRouter({
         data: { rating: input.rating },
       });
     }),
+  getRating: protectedProcedure
+    .input(z.object({ songId: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const song = await ctx.prisma.song.findFirst({
+        where: { id: input.songId },
+      });
+
+      if (!song)
+        throw new TRPCError({
+          message: "could not find song!!",
+          code: "NOT_FOUND",
+        });
+
+      return await ctx.prisma.star.findFirst({
+        where: { userId: ctx.session.user.id, songId: song.spotify_id },
+      });
+    }),
 });

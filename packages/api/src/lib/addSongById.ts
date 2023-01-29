@@ -76,7 +76,7 @@ export const addSongById = async (id: string | undefined, token: string) => {
     },
   };
 
-  await prisma.song.upsert({
+  const response = await prisma.song.upsert({
     where: { spotify_id: song.spotify_id },
     update: {
       ...baseSong,
@@ -104,4 +104,6 @@ export const addSongById = async (id: string | undefined, token: string) => {
       },
     },
   });
+
+  return response.id;
 };
