@@ -34,7 +34,7 @@ const TabOption: React.FC<
   return (
     <div
       {...rest}
-      className={`${classSelected} ${disabledClass} w-full rounded-t-lg bg-dark-containers py-3 text-center`}
+      className={`${classSelected} ${disabledClass} w-full rounded-t-lg border border-dark-containers bg-dark-containers py-3 text-center`}
       onClick={(e) => {
         if (disabled) return;
         if (self !== current) updateTab(self);
