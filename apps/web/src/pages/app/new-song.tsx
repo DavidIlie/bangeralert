@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NextSeo } from "next-seo";
 
 import { AppLayout } from "../../layouts/AppLayout";
@@ -8,14 +8,18 @@ import TabBody from "../../ui/tab/TabBody";
 import { api } from "../../lib/api";
 
 import CreateByURL from "../../ui/song/create/CreateByURL";
+import { useCreateReviewStore } from "../../stores/useCreateReviewStore";
 
 const NewSong: NextPage = () => {
   const [tab, setTab] = useState(1);
+  const { reset } = useCreateReviewStore();
 
   const { data, refetch } = api.spotify.currentListening.useQuery();
 
   const shouldByCurrentBeDisabled =
-    data === false ? true : data ? data!.is_playing : false;
+    typeof data !== "object" ? true : !data!.is_playing;
+
+  useEffect(() => reset(), [reset, tab]);
 
   return (
     <>

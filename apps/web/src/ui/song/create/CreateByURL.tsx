@@ -1,28 +1,24 @@
 import * as React from "react";
 import { useState } from "react";
-import { useRouter } from "next/router";
 
 import { api, RouterOutputs } from "../../../lib/api";
 import { Button } from "../../Button";
 import Input from "../../form/Input";
-import Song, { BaseSong } from "..";
 import { useLoadingStore } from "../../../stores/useLoadingStore";
 import { linkRegex } from "../../../lib/constants";
-import SongStars from "../SongStars";
-import Radio from "../../form/Radio";
+import { useCreateReviewStore } from "../../../stores/useCreateReviewStore";
+import BaseSongAdder from "../BaseSongAdder";
 
 const CreateByURL: React.FC = () => {
-  const { push } = useRouter();
   const { toggleLoading } = useLoadingStore();
+  const { setHasReview, setSelfReview, setOgReview } = useCreateReviewStore();
 
   const [songURL, setSongURL] = useState("");
   const [foundSong, setFoundSong] = useState<
     RouterOutputs["spotify"]["getSong"] | null
   >(null);
 
-  const [hasReview, setHasReview] = useState(true);
-  const [selfReview, setSelfReview] = useState(0);
-  const [ogReview, setOgReview] = useState(0);
+  const doesSongAlreadyExist = foundSong !== null && (foundSong as any)._stars;
 
   const getRatings = api.song.getRating.useMutation();
 
@@ -44,20 +40,6 @@ const CreateByURL: React.FC = () => {
       setOgReview(data.rating);
     },
   });
-
-  const addReview = api.song.addRating.useMutation({
-    onSuccess: () => push("/app"),
-  });
-
-  const addSong = api.spotify.create.useMutation({
-    onSuccess: async (id) => {
-      if (hasReview)
-        return await addReview.mutateAsync({ songId: id, rating: selfReview });
-      push("/app");
-    },
-  });
-
-  const doesSongAlreadyExist = foundSong !== null && (foundSong as any)._stars;
 
   return (
     <div>
@@ -106,62 +88,7 @@ const CreateByURL: React.FC = () => {
         </Button>
       )}
       <div className="mt-2" />
-      {foundSong &&
-        (doesSongAlreadyExist ? (
-          <Song song={foundSong as any} disableSelfReview />
-        ) : (
-          <BaseSong song={foundSong as any} />
-        ))}
-      {foundSong && (
-        <div className="mt-4">
-          {hasReview ? (
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold">Rating: </h1>
-              <SongStars
-                stars={selfReview}
-                onClick={() => {
-                  const ratingPrompt = prompt("what do u think of this song");
-                  if (!ratingPrompt) return alert("wtf man");
-
-                  let rating = 0;
-                  try {
-                    rating = parseInt(ratingPrompt);
-                  } catch (error) {}
-
-                  if (rating > 5 || rating < 0) return alert("wtf man");
-
-                  setSelfReview(rating);
-                }}
-              />
-              <Button
-                onClick={() => {
-                  setHasReview(false);
-                  setSelfReview(ogReview);
-                }}
-              >
-                Remove Review
-              </Button>
-            </div>
-          ) : (
-            <Radio
-              label="Add Review"
-              checked={hasReview}
-              onClick={() => setHasReview(true)}
-            />
-          )}
-          <Button
-            className="mt-4 w-full"
-            disabled={doesSongAlreadyExist ? !hasReview : false}
-            onClick={async () =>
-              await addSong.mutateAsync({
-                songId: foundSong.spotify_id,
-              })
-            }
-          >
-            Publish Song
-          </Button>
-        </div>
-      )}
+      {foundSong && <BaseSongAdder song={foundSong} />}
     </div>
   );
 };
