@@ -8,6 +8,7 @@ import { Button } from "../../Button";
 import BaseSongAdder from "../BaseSongAdder";
 
 const CreateByCurrentListening: React.FC = () => {
+  const utils = api.useContext();
   const { reset } = useCreateReviewStore();
   const [data, setData] = useState<
     RouterOutputs["spotify"]["currentlyListening"] | null
@@ -30,6 +31,7 @@ const CreateByCurrentListening: React.FC = () => {
           const response = await getSong.mutateAsync();
           setData(response);
           reset();
+          utils.spotify.currentListeningBoolean.invalidate();
         }}
         className="my-2"
       >
