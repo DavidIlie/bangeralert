@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { usePopper } from "react-popper";
+import { Portal } from "@mantine/core";
 
 export const DropdownController: React.FC<{
   children: React.ReactNode;
@@ -72,7 +72,7 @@ export const DropdownController: React.FC<{
       >
         {children}
       </button>
-      {portal ? createPortal(body, document.querySelector("#__next")!) : body}
+      {portal ? <Portal target="#__next">{body}</Portal> : body}
     </React.Fragment>
   );
 };

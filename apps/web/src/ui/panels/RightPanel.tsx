@@ -64,14 +64,14 @@ const Song: React.FC<{ song: SongResponseType }> = ({ song }) => (
     <FaSpotify className="text-green-600" />
     <div className="truncate">
       <Link
-        href={`/app/song/fromSpotId/${song.spotify_id}`}
+        href={`/get/song/${song.spotify_id}`}
         className="font-semibold duration-150 hover:text-blue-500"
       >
         {song.name}
       </Link>
       <span className="text-gray-300">{" by "}</span>
       <Link
-        href={`/app/artist/fromSpotId/${song.artist[0]?.spotify_id}`}
+        href={`/get/artist/${song.artist[0]?.spotify_id}`}
         className="font-semibold  duration-150 hover:text-blue-500"
       >
         {song.artist[0]?.name}
