@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import Song, { BaseSong } from ".";
@@ -24,12 +24,14 @@ const BaseSongAdder: React.FC<{
     setHasReview,
     ogReview,
     setOgReview,
+    reset,
   } = useCreateReviewStore();
 
   const addReview = api.song.addRating.useMutation({
     onSuccess: () => {
       toggleLoading();
       push("/app");
+      reset();
     },
   });
 
@@ -42,14 +44,25 @@ const BaseSongAdder: React.FC<{
     },
   });
 
-  const doesSongAlreadyExist = song !== null && (song as any)._stars;
+  const doExistCheck = () =>
+    song !== null ? typeof (song as any)._stars === "number" : false;
+  const [doesSongAlreadyExist, setDoesSongAlreadyExist] = useState(
+    doExistCheck(),
+  );
+
+  useEffect(() => {
+    setDoesSongAlreadyExist(doExistCheck());
+  });
 
   useEffect(() => {
     if (doesSongAlreadyExist) {
       setSelfReview((song as any)._stars);
       setOgReview((song as any)._stars);
+      setHasReview(true);
+    } else {
+      reset();
     }
-  }, []);
+  }, [doesSongAlreadyExist]);
 
   return (
     <div>
@@ -91,7 +104,7 @@ const BaseSongAdder: React.FC<{
           <Radio
             label="Add Review"
             checked={hasReview}
-            onClick={() => setHasReview(true)}
+            onChange={() => setHasReview(true)}
           />
         )}
         <Button

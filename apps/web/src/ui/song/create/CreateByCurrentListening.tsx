@@ -3,13 +3,11 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 
 import { api, RouterOutputs } from "../../../lib/api";
-import { useCreateReviewStore } from "../../../stores/useCreateReviewStore";
 import { Button } from "../../Button";
 import BaseSongAdder from "../BaseSongAdder";
 
 const CreateByCurrentListening: React.FC = () => {
   const utils = api.useContext();
-  const { reset } = useCreateReviewStore();
   const [data, setData] = useState<
     RouterOutputs["spotify"]["currentlyListening"] | null
   >(null);
@@ -27,17 +25,20 @@ const CreateByCurrentListening: React.FC = () => {
   return (
     <div>
       <Button
-        onClick={async () => {
+        onClick={async (e) => {
           const response = await getSong.mutateAsync();
           setData(response);
-          reset();
           utils.spotify.currentListeningBoolean.invalidate();
         }}
         className="my-2"
       >
         Refresh
       </Button>
-      {!data ? <div>Loading...</div> : <BaseSongAdder song={data as any} />}
+      {!data || getSong.isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <BaseSongAdder song={data as any} />
+      )}
     </div>
   );
 };

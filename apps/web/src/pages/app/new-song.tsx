@@ -20,7 +20,9 @@ const NewSong: NextPage = () => {
   const shouldByCurrentBeDisabled =
     typeof data !== "object" ? true : !data!.is_playing;
 
-  useEffect(() => reset(), [reset, tab]);
+  useEffect(() => {
+    if (tab !== 2) reset();
+  }, [reset, tab]);
 
   return (
     <>
