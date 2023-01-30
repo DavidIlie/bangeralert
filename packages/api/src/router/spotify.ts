@@ -106,6 +106,15 @@ export const spotifyRouter = createTRPCRouter({
       return false;
     }
   }),
+  currentlyListeningBasic: spotifyProcedure.query(async ({ ctx }) => {
+    try {
+      return parseSong(
+        (await (await makeRequest(`me/player`, ctx.spotifyToken)).json()).item,
+      );
+    } catch (error) {
+      return false;
+    }
+  }),
   getSong: spotifyProcedure
     .input(z.object({ url: z.string() }))
     .mutation(async ({ ctx, input }) => {
