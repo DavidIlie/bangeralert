@@ -11,7 +11,7 @@ type Store = {
 };
 
 export const useCreateReviewStore = create<Store>((set) => ({
-  hasReview: true,
+  hasReview: false,
   setHasReview(val: boolean) {
     set((state) => ({
       ...state,
@@ -33,6 +33,6 @@ export const useCreateReviewStore = create<Store>((set) => ({
     }));
   },
   reset() {
-    set(() => ({ hasReview: true, selfReview: 0, ogReview: 0 }));
+    set(() => ({ hasReview: false, selfReview: 0, ogReview: 0 }));
   },
 }));
