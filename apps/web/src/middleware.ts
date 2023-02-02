@@ -14,6 +14,8 @@ const middleware = async (req: NextRequest) => {
     if (typeof sessionToken?.value !== "string")
       return NextResponse.redirect(redirectLoginUrl);
 
+    console.log("made it past first redirect");
+
     const r = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/proxy`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -25,8 +27,10 @@ const middleware = async (req: NextRequest) => {
 
     try {
       if (r.status !== 200) return NextResponse.redirect(redirectLoginUrl);
+      console.log("made it past second redirect");
       return NextResponse.next();
     } catch (error) {
+      console.log("error");
       return NextResponse.redirect(
         `${process.env.NEXT_PUBLIC_APP_URL}/sign-in?error=checkauth`,
       );
