@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 
 import { useScreenType } from "../hooks/useScreenType";
 import { AppGrid } from "../ui/AppGrid";
@@ -21,7 +22,14 @@ export const AppLayout: React.FC<{
   extraMiddleLayout,
   children,
 }) => {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
   const screenType = useScreenType();
+
+  if (!loaded) return <div />;
 
   let components = null;
 
@@ -61,8 +69,10 @@ export const AppLayout: React.FC<{
       );
   }
   return (
-    <div className="flex h-screen w-full flex-col items-center scrollbar-thin scrollbar-thumb-gray-700">
-      <AppGrid>{components}</AppGrid>
-    </div>
+    <>
+      <div className="flex h-screen w-full flex-col items-center scrollbar-thin scrollbar-thumb-gray-700">
+        <AppGrid>{components}</AppGrid>
+      </div>
+    </>
   );
 };

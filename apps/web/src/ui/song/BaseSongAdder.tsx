@@ -117,7 +117,7 @@ const BaseSongAdder: React.FC<{
             });
           }}
         >
-          Publish Song
+          Publish Review
         </Button>
       </div>
     </div>

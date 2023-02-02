@@ -5,7 +5,7 @@ import moment from "moment";
 import { getServerSession } from "@acme/auth/backend";
 import { prisma } from "@acme/db";
 
-import { getAccessToken } from "./lib/spotify";
+import { getAccessToken, makeRequest } from "./lib/spotify";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -45,6 +45,15 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   if (seconds > 3000 || Number.isNaN(seconds) || !user.accessToken) {
     const data = await getAccessToken(user.accounts[0]?.refresh_token!);
+
+    if (!user.spotifyId) {
+      const me = await (await makeRequest(`me`, data.access_token)).json();
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { spotifyId: me.id },
+      });
+    }
+
     user = await prisma.user.update({
       where: { id: user.id },
       data: {

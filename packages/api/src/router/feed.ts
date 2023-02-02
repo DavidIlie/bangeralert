@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { Song, Star } from "@acme/db";
 import { protectedProcedure, createTRPCRouter } from "../trpc";
 
@@ -29,14 +31,37 @@ export function getStarAvg<T>(song: T | (Song & { stars: Star[] })) {
 }
 
 export const feedRouter = createTRPCRouter({
-  getFeed: protectedProcedure.query(async ({ ctx }) => {
-    return (
-      await ctx.prisma.song.findMany({
-        include: basicIncludeForSong(ctx.session.user.id),
-        orderBy: {
-          created: "desc",
-        },
-      })
-    ).map((song) => getStarAvg<typeof song>(song));
-  }),
+  getFeed: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 50;
+      const { cursor, skip } = input;
+      const items = (
+        await ctx.prisma.song.findMany({
+          take: limit + 1,
+          skip: skip,
+          cursor: cursor ? { spotify_id: cursor } : undefined,
+          include: basicIncludeForSong(ctx.session.user.id),
+          orderBy: {
+            created: "desc",
+          },
+        })
+      ).map((song) => getStarAvg<typeof song>(song));
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.spotify_id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
 });

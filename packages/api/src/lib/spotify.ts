@@ -36,13 +36,20 @@ export const makeRequest = async (
     | "DELETE"
     | "OPTIONS"
     | "HEAD",
+  query?: any,
 ): Promise<Response> =>
   await fetch(`https://api.spotify.com/v1/${path}`, {
     method,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": `application/json`,
-    },
+    headers: query
+      ? {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": `application/json`,
+          query,
+        }
+      : {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": `application/json`,
+        },
   });
 
 export interface SongResponseType {

@@ -138,6 +138,31 @@ model Song {
   stars        Star[]        @relation("starSong")
   comments     Comment[]     @relation("commentSong")
   interactions Interaction[] @relation("interactionSong")
+
+  playlists PlaylistSongLink[]
+}
+
+model PlaylistSongLink {
+  id         String   @default(uuid())
+  songSpotId String   @id
+  songId     String
+  song       Song     @relation(fields: [songId], references: [spotify_id], onDelete: Cascade)
+  playlistId String
+  playlist   Playlist @relation(fields: [playlistId], references: [spotify_id], onDelete: Cascade)
+}
+
+model Playlist {
+  id            String             @default(uuid())
+  spotify_id    String             @id
+  userId        String?
+  created       DateTime           @default(now())
+  description   String
+  photo         String
+  user          User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  songs         PlaylistSongLink[]
+  followers     Int
+  spotify_url   String
+  collaborative Boolean
 }
 
 enum FollowType {
@@ -194,18 +219,22 @@ model User {
   accessToken       String?
   accessTokenObtain DateTime?
 
+  spotifyId String?
+
   username    String?
   description String?
   website     String?
   tags        String[]
 
-  FollowSent     Follow[] @relation("ogUserFollow")
-  FollowRecieved Follow[] @relation("targetUserFollow")
+  followSent     Follow[] @relation("ogUserFollow")
+  followRecieved Follow[] @relation("targetUserFollow")
 
   interaction    Interaction[]
   commentOpinion CommentOpinion[]
   comment        Comment[]
   star           Star[]
+
+  playlist Playlist[]
 }
 
 model VerificationToken {

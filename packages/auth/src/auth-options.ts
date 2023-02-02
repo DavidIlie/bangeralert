@@ -80,21 +80,23 @@ export const authOptions: NextAuthOptions = {
         const followData = await prisma.user.findUnique({
           where: { id: session?.user?.id },
           include: {
-            FollowRecieved: true,
-            FollowSent: true,
+            followRecieved: true,
+            followSent: true,
             _count: {
               select: {
-                FollowRecieved: true,
-                FollowSent: true,
+                followRecieved: true,
+                followSent: true,
               },
             },
           },
         });
 
-        session.user.followers = followData?._count.FollowRecieved as number;
-        session.user.following = followData?._count.FollowSent as number;
+        session.user.followers = followData?._count.followRecieved as number;
+        session.user.following = followData?._count.followSent as number;
 
         session.user.tags = user.tags as string[];
+
+        session.user.spotifyId = user.spotifyId as string;
       }
 
       return session;

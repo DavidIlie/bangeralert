@@ -1,6 +1,7 @@
 import { useMediaQuery } from "@mantine/hooks";
 
 export const useScreenType = () => {
+  // TODO: fix ssr problem
   const is3Cols = useMediaQuery("(min-width: 1336px)");
   const is2Cols = useMediaQuery("(min-width: 1265px)");
   const is1Cols = useMediaQuery("(min-width: 800px)");

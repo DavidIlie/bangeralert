@@ -1,5 +1,5 @@
 import moment from "moment";
-import { makeRequest, parseSong } from "./spotify";
+import { makeRequest, parseSong, SongResponseType } from "./spotify";
 
 import { prisma } from "@acme/db";
 
@@ -28,11 +28,10 @@ export const getArtistData = async (artist: any, token: string) => {
   };
 };
 
-export const addSongById = async (id: string | undefined, token: string) => {
-  const song = parseSong(
-    await (await makeRequest(`tracks/${id}`, token)).json(),
-  );
-
+export const addSongByObject = async (
+  song: SongResponseType,
+  token: string,
+) => {
   let artistArray = [] as any;
 
   await Promise.all(
@@ -50,12 +49,14 @@ export const addSongById = async (id: string | undefined, token: string) => {
     external_url: song.external_url,
   };
 
-  const apiReturnedAlbum = await await (
-    await makeRequest(`albums/${song.album.spotify_id}`, token)
-  ).json();
+  let mainAlbumArtistData;
+
+  const r = await makeRequest(`albums/${song.album.spotify_id}`, token);
+  const apiReturnedAlbum = await r.json();
+
   const artist = apiReturnedAlbum.artists[0];
 
-  const mainAlbumArtistData = await getArtistData(
+  mainAlbumArtistData = await getArtistData(
     {
       external_url: artist.external_urls.spotify,
       spotify_id: artist.id,
@@ -76,7 +77,7 @@ export const addSongById = async (id: string | undefined, token: string) => {
     },
   };
 
-  const response = await prisma.song.upsert({
+  return await prisma.song.upsert({
     where: { spotify_id: song.spotify_id },
     update: {
       ...baseSong,
@@ -103,7 +104,16 @@ export const addSongById = async (id: string | undefined, token: string) => {
         connectOrCreate: artistArray.map((a: any) => a),
       },
     },
+    include: {
+      artist: true,
+      album: true,
+    },
   });
+};
 
-  return response.id;
+export const addSongById = async (id: string | undefined, token: string) => {
+  const song = parseSong(
+    await (await makeRequest(`tracks/${id}`, token)).json(),
+  );
+  return addSongByObject(song, token);
 };

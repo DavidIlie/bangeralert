@@ -1,7 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
+import { useIntersection } from "@mantine/hooks";
 
 import { Button } from "../../ui/Button";
 import { api } from "../../lib/api";
@@ -9,7 +10,20 @@ import { AppLayout } from "../../layouts/AppLayout";
 import Song from "../../ui/song";
 
 const App: NextPage = () => {
-  const { data } = api.feed.getFeed.useQuery();
+  const { ref, entry } = useIntersection();
+
+  const { data, fetchNextPage, isLoading } = api.feed.getFeed.useInfiniteQuery(
+    {
+      limit: 15,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
+
+  useEffect(() => {
+    if (!isLoading && entry) fetchNextPage();
+  }, [entry, fetchNextPage, isLoading]);
 
   return (
     <AppLayout
@@ -24,9 +38,12 @@ const App: NextPage = () => {
         </div>
       }
     >
-      {data?.map((song) => (
-        <Song song={song} key={song.id} />
-      ))}
+      {data?.pages.map((page) =>
+        page.items.map((song) => <Song song={song as any} key={song.id} />),
+      )}
+      <div ref={ref}>
+        <h1>Loading...</h1>
+      </div>
     </AppLayout>
   );
 };

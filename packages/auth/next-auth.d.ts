@@ -10,6 +10,7 @@ declare module "next-auth" {
       followers?: number;
       following?: number;
       tags?: string[];
+      spotifyId?: string;
     } & DefaultSession["user"];
   }
 }
