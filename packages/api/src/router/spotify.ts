@@ -147,14 +147,6 @@ export const spotifyRouter = createTRPCRouter({
         await (await makeRequest(`tracks/${songId}`, ctx.spotifyToken)).json(),
       );
     }),
-  test: spotifyProcedure.query(async ({ ctx }) => {
-    return await (
-      await makeRequest(
-        `me/tracks/contains?ids=7wtU7N6R49UAbzQcLjRy5q`,
-        ctx.spotifyToken,
-      )
-    ).json();
-  }),
   createPlaylist: spotifyProcedure
     // .input(z.object({ playlistId: z.string() }))
     .query(async ({ ctx }) => {

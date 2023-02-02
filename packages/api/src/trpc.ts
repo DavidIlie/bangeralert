@@ -38,21 +38,17 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   if (!user) throw new Error("there is no way this could happen");
 
-  const seconds = moment(new Date()).diff(
-    moment(user.accessTokenObtain),
-    "seconds",
-  );
+  const seconds = user.accessTokenObtain
+    ? moment(new Date()).diff(moment(user.accessTokenObtain), "seconds")
+    : false;
 
-  if (seconds > 3000 || Number.isNaN(seconds) || !user.accessToken) {
+  if (
+    seconds > 3000 ||
+    Number.isNaN(seconds) ||
+    !seconds ||
+    !user.accessToken
+  ) {
     const data = await getAccessToken(user.accounts[0]?.refresh_token!);
-
-    if (!user.spotifyId) {
-      const me = await (await makeRequest(`me`, data.access_token)).json();
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { spotifyId: me.id },
-      });
-    }
 
     user = await prisma.user.update({
       where: { id: user.id },
@@ -60,6 +56,14 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
         accessToken: data.access_token,
         accessTokenObtain: new Date(),
       },
+      include: { accounts: true },
+    });
+  }
+  if (!user.spotifyId) {
+    const me = await (await makeRequest(`me`, user.accessToken!)).json();
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: { spotifyId: me.id },
       include: { accounts: true },
     });
   }
