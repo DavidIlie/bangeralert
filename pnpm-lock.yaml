@@ -130,7 +130,6 @@ importers:
       react-dom: 18.2.0
       react-icons: ^4.7.1
       react-popper: ^2.3.0
-      react-responsive: ^9.0.2
       react-star-ratings: ^2.3.0
       tailwindcss: ^3.2.4
       typescript: ^4.9.4
@@ -160,7 +159,6 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-icons: 4.7.1_react@18.2.0
       react-popper: 2.3.0_r6q5zrenym2zg7je7hgi674bti
-      react-responsive: 9.0.2_react@18.2.0
       react-star-ratings: 2.3.0
       zod: 3.20.2
       zustand: 4.3.2_react@18.2.0
@@ -6052,10 +6050,6 @@ packages:
       - supports-color
     dev: false
 
-  /hyphenate-style-name/1.0.4:
-    resolution: {integrity: sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==}
-    dev: false
-
   /iconv-lite/0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -6897,12 +6891,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       object-visit: 1.0.1
-    dev: false
-
-  /matchmediaquery/0.3.1:
-    resolution: {integrity: sha512-Hlk20WQHRIm9EE9luN1kjRjYXAQToHOIAHPJn9buxBwuhfTHoKUcX+lXBbxc85DVQfXYbEQ4HcwQdd128E3qHQ==}
-    dependencies:
-      css-mediaquery: 0.1.2
     dev: false
 
   /md5-file/3.2.3:
@@ -8691,19 +8679,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /react-responsive/9.0.2_react@18.2.0:
-    resolution: {integrity: sha512-+4CCab7z8G8glgJoRjAwocsgsv6VA2w7JPxFWHRc7kvz8mec1/K5LutNC2MG28Mn8mu6+bu04XZxHv5gyfT7xQ==}
-    engines: {node: '>=0.10'}
-    peerDependencies:
-      react: '>=16.8.0'
-    dependencies:
-      hyphenate-style-name: 1.0.4
-      matchmediaquery: 0.3.1
-      prop-types: 15.8.1
-      react: 18.2.0
-      shallow-equal: 1.2.1
-    dev: false
-
   /react-shallow-renderer/16.15.0_react@18.1.0:
     resolution: {integrity: sha512-oScf2FqQ9LFVQgA73vr86xl2NaOIX73rh+YFqcOp68CWj56tSfgtGKrEbyhCj0rSijyG9M1CYprTh39fBi5hzA==}
     peerDependencies:
@@ -9209,10 +9184,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       kind-of: 6.0.3
-    dev: false
-
-  /shallow-equal/1.2.1:
-    resolution: {integrity: sha512-S4vJDjHHMBaiZuT9NPb616CSmLf618jawtv3sufLl6ivK8WocjAo58cXwbRV1cgqxH0Qbv+iUt6m05eqEa2IRA==}
     dev: false
 
   /shebang-command/1.2.0:
