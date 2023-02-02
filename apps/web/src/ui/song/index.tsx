@@ -20,7 +20,7 @@ export const BaseSong: React.FC<{
 }> = ({ song, embedLinks, children }) => {
   const transition = "hover:text-blue-500 duration-150";
 
-  const songName = (song: SongResponseType | SongType) =>
+  const songName = (song: SongResponseType | SongType["items"][0]) =>
     embedLinks ? (
       <Link href={embedLinks.song}>
         <p className={`text-md truncate md:text-xl ${transition}`}>
@@ -104,7 +104,7 @@ export const BaseSong: React.FC<{
 };
 
 const Song: React.FC<
-  defaultDivProps & { song: SongType; disableSelfReview?: boolean }
+  defaultDivProps & { song: SongType["items"][0]; disableSelfReview?: boolean }
 > = ({ song, disableSelfReview = false, ...rest }) => {
   const utils = api.useContext();
 

@@ -36,9 +36,12 @@ const BaseSongAdder: React.FC<{
   });
 
   const addSong = api.spotify.create.useMutation({
-    onSuccess: async (id) => {
+    onSuccess: async (song) => {
       if (hasReview)
-        return await addReview.mutateAsync({ songId: id, rating: selfReview });
+        return await addReview.mutateAsync({
+          songId: song.id,
+          rating: selfReview,
+        });
       toggleLoading();
       push("/app");
     },
