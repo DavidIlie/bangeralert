@@ -14,7 +14,7 @@
     "FIXME:lint": "turbo lint && manypkg check",
     "type-check": "turbo type-check",
     "postinstall": "patch-package",
-    "build:web": "turbo --filter web build",
+    "build:web": "patch-package && turbo --filter web build",
     "start:web": "turbo --filter web start"
   },
   "dependencies": {
