@@ -9,7 +9,7 @@
     "lint": "SKIP_ENV_VALIDATION=1 next lint",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --",
-    "start": "pnpm with-env next start"
+    "start": "next start"
   },
   "dependencies": {
     "@acme/api": "*",
