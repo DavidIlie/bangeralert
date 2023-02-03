@@ -5,7 +5,7 @@ COPY . .
 RUN npm install --global pnpm@7.13.0
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm --filter \!expo install turbo
-RUN pnpm build:web
+RUN NEXT_PUBLIC_APP_URL=https://bangeralert.davidapps.dev pnpm build:web
 
 FROM node:16.13.0-alpine AS runner
 WORKDIR /app
