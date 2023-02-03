@@ -20,9 +20,6 @@
       "dependsOn": ["patch", "^build", "^db:generate"],
       "outputs": [".next/**", ".expo/**"]
     },
-    "start": {
-      "dependsOn": ["^build", "^db:generate"]
-    },
     "lint": {
       "outputs": []
     },
