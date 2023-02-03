@@ -4,8 +4,12 @@ import type { NextRequest } from "next/server";
 const middleware = async (req: NextRequest) => {
   const path = req.nextUrl.pathname;
 
+  console.log("pre hay");
+
   if (path.startsWith("/app")) {
     const sessionToken = req.cookies.get("next-auth.session-token");
+
+    console.log("hey");
 
     const redirectLoginUrl = `${process.env.NEXT_PUBLIC_APP_URL}/sign-in${
       path !== "/" ? `?callbackUrl=${encodeURIComponent(path)}` : ""
