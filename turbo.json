@@ -13,8 +13,11 @@
       "dependsOn": ["^db:generate"],
       "cache": false
     },
+    "patch": {
+      "cache": false
+    },
     "build": {
-      "dependsOn": ["^build", "^db:generate"],
+      "dependsOn": ["patch", "^build", "^db:generate"],
       "outputs": [".next/**", ".expo/**"]
     },
     "start": {
