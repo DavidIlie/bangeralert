@@ -7,4 +7,5 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm --filter \!expo install turbo
 RUN NEXT_PUBLIC_APP_URL=https://bangeralert.davidapps.dev SKIP_ENV_VALIDATION=true pnpm build:web
 EXPOSE 3000
-CMD [ "pnpm", "start:web" ]
+WORKDIR /app/apps/web
+CMD [ "npm", "run", "start" ]
