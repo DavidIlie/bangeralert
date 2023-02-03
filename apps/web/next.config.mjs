@@ -7,7 +7,6 @@ const config = {
   transpilePackages: ["@acme/api", "@acme/auth", "@acme/db"],
   eslint: { ignoreDuringBuilds: !!process.env.CI },
   typescript: { ignoreBuildErrors: !!process.env.CI },
-  output: "standalone",
 };
 
 export default config;
