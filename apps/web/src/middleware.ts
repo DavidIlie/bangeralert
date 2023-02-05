@@ -14,6 +14,8 @@ const middleware = async (req: NextRequest) => {
     if (typeof sessionToken?.value !== "string")
       return NextResponse.redirect(redirectLoginUrl);
 
+    console.log(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/proxy`);
+
     const r = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/proxy`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -22,6 +24,8 @@ const middleware = async (req: NextRequest) => {
         sessionToken,
       }),
     });
+
+    console.log(r.status);
 
     try {
       if (r.status !== 200) return NextResponse.redirect(redirectLoginUrl);
