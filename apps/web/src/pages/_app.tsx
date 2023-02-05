@@ -14,11 +14,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const [hasLoaded, setLoaded] = useState(false);
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
-
   const { loading } = useLoadingStore();
 
   return (
@@ -56,7 +51,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <SessionProvider session={session}>
           <div className="flex min-h-screen flex-col bg-dark-bg text-white">
             <LoadingOverlay visible={loading} className="fixed" />
-            {hasLoaded && <Component {...pageProps} />}
+            <Component {...pageProps} />
           </div>
         </SessionProvider>
       </MantineProvider>

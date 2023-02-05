@@ -42,7 +42,7 @@ const App: NextPage = () => {
         page.items.map((song) => <Song song={song as any} key={song.id} />),
       )}
       <div ref={ref}>
-        <h1>Loading...</h1>
+        <h1 className="invisible">Loading...</h1>
       </div>
     </AppLayout>
   );
