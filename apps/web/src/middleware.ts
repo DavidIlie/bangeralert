@@ -11,6 +11,8 @@ const middleware = async (req: NextRequest) => {
       path !== "/" ? `?callbackUrl=${encodeURIComponent(path)}` : ""
     }`;
 
+    console.log(sessionToken);
+
     if (typeof sessionToken?.value !== "string")
       return NextResponse.redirect(redirectLoginUrl);
 
