@@ -13,12 +13,8 @@ const middleware = async (req: NextRequest) => {
       path !== "/" ? `?callbackUrl=${encodeURIComponent(path)}` : ""
     }`;
 
-    console.log(sessionToken);
-
     if (typeof sessionToken?.value !== "string")
       return NextResponse.redirect(redirectLoginUrl);
-
-    console.log(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/proxy`);
 
     const r = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/proxy`, {
       method: "POST",
@@ -28,8 +24,6 @@ const middleware = async (req: NextRequest) => {
         sessionToken,
       }),
     });
-
-    console.log(r.status);
 
     try {
       if (r.status !== 200) return NextResponse.redirect(redirectLoginUrl);
