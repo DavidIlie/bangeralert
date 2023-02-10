@@ -2,11 +2,12 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { spotifyProcedure, createTRPCRouter } from "../trpc";
 
-import { Configuration, OpenAIApi } from "openai";
+import { ChatGPTAPI } from "chatgpt";
 
 import { addSongById, addSongByObject } from "../lib/addSong";
 import { makeRequest, parseSong, SongResponseType } from "../lib/spotify";
 import { basicIncludeForSong, getStarAvg } from "./feed";
+import { parseSpotifyUrl } from "../lib/parseSpotifyUrl";
 
 export const spotifyRouter = createTRPCRouter({
   create: spotifyProcedure
@@ -122,17 +123,7 @@ export const spotifyRouter = createTRPCRouter({
   getSong: spotifyProcedure
     .input(z.object({ url: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      let songId;
-      try {
-        songId = input.url
-          .split("https://open.spotify.com/track/")[1]
-          ?.split("?si=")[0];
-      } catch (error) {
-        throw new TRPCError({
-          message: "wrong URL format!",
-          code: "BAD_REQUEST",
-        });
-      }
+      let songId = parseSpotifyUrl(input.url);
 
       const prismaSong = await ctx.prisma.song.findFirst({
         where: { spotify_id: songId },
@@ -150,14 +141,24 @@ export const spotifyRouter = createTRPCRouter({
   createPlaylist: spotifyProcedure
     // .input(z.object({ playlistId: z.string() }))
     .query(async ({ ctx }) => {
-      const id = "1JDF5vx0Plf0FdN9QuS1tJ";
+      if (process.env.NODE_ENV === "production")
+        throw new TRPCError({ message: "no can do", code: "BAD_REQUEST" });
+
+      let playlistUrl =
+        "https://open.spotify.com/playlist/7vDCASxFXQoLCPj4xANDMa?si=40dc23514fda45d9";
+      let id = parseSpotifyUrl(playlistUrl, "playlist");
 
       let playlist;
       try {
         playlist = await (
           await makeRequest(`playlists/${id}`, ctx.spotifyToken)
         ).json();
-      } catch (error) {}
+      } catch (error) {
+        throw new TRPCError({
+          message: "couldn't find playlist",
+          code: "BAD_REQUEST",
+        });
+      }
 
       const owner = playlist.owner.id;
 
@@ -180,6 +181,8 @@ export const spotifyRouter = createTRPCRouter({
           followers: playlist.followers.total,
           spotify_url: playlist.external_urls.spotify,
           collaborative: playlist.collaborative,
+          private: !playlist.public,
+          name: playlist.name,
           ...extraWhere,
         },
         update: {
@@ -189,26 +192,45 @@ export const spotifyRouter = createTRPCRouter({
           followers: playlist.followers.total,
           spotify_url: playlist.external_urls.spotify,
           collaborative: playlist.collaborative,
+          private: !playlist.public,
+          name: playlist.name,
           ...extraWhere,
         },
       });
 
       const promises = [];
-      for (let i = 0; i < playlist.tracks.total; i += 100) {
+      for (let i = 0; i < playlist.tracks.total; i += 50) {
+        let limit = 50;
+        if (i + 50 >= playlist.tracks.total) {
+          limit = playlist.tracks.total - i;
+        }
         promises.push(
-          makeRequest(`playlists/${id}/tracks`, ctx.spotifyToken, "GET", {
-            offset: i,
-            limit: 100,
-          }),
+          makeRequest(
+            `playlists/${id}/tracks?offset=${i}&limit=${limit}`,
+            ctx.spotifyToken,
+          ),
         );
       }
 
       const responses = await Promise.all(promises);
-      const data = (await Promise.all(responses.map((res) => res.json())))[0];
 
-      const allSongs = data.items.map((song: any) =>
-        parseSong(song.track),
-      ) as SongResponseType[];
+      const notGroupedData = await Promise.all(
+        responses.map(async (res) => {
+          const response = await res.json();
+
+          return response;
+        }),
+      );
+
+      let allSongs = [] as SongResponseType[];
+
+      notGroupedData.map((s) => {
+        s.items.map(
+          (song: any) =>
+            song.track.available_markets.length !== 0 &&
+            allSongs.push(parseSong(song.track)),
+        );
+      });
 
       let songsToBeAdded = [] as SongResponseType[];
 
@@ -222,97 +244,46 @@ export const spotifyRouter = createTRPCRouter({
       );
 
       let songNumber = 0;
-
       for (const song of songsToBeAdded) {
         const data = await addSongByObject(song, ctx.spotifyToken);
         songNumber++;
         console.log(
           `ADDED SONG: ${data.name} by ${data.artist[0]?.name} (${songNumber}). ID: ${song.spotify_id}`,
         );
-        await new Promise((resolve) => setTimeout(resolve, 333));
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
-      await ctx.prisma.playlistSongLink.upsert({
+      const allDBSongsId = await ctx.prisma.song.findMany({
         where: {
-          songSpotId: id,
+          spotify_id: { in: allSongs.map((s) => s.spotify_id) },
         },
-        update: {
-          songId: id,
-          playlistId: prismaPlaylist.id,
-        },
-        create: {
-          songSpotId: id,
-          songId: id,
-          playlistId: prismaPlaylist.id,
-        },
+        select: { id: true, spotify_id: true },
       });
+
+      await ctx.prisma.$transaction(
+        allDBSongsId.map((song) => {
+          return ctx.prisma.playlistSongLink.upsert({
+            where: {
+              songSpotId: song.spotify_id,
+            },
+            update: {
+              songId: song.spotify_id,
+            },
+            create: {
+              songSpotId: song.spotify_id,
+              songId: song.spotify_id,
+              playlistId: prismaPlaylist.spotify_id,
+            },
+          });
+        }),
+      );
 
       return allSongs;
     }),
-  bulkImport: spotifyProcedure.query(async ({ ctx }) => {
-    if (process.env.NODE_ENV !== "development")
+  openai: spotifyProcedure.query(async ({ ctx }) => {
+    if (process.env.NODE_ENV === "production")
       throw new TRPCError({ message: "no can do", code: "BAD_REQUEST" });
 
-    const userId = (await (await makeRequest(`me`, ctx.spotifyToken)).json())
-      .id;
-
-    const userPlaylists = await (
-      await makeRequest(`me/playlists`, ctx.spotifyToken)
-    ).json();
-
-    let playlistIds = userPlaylists.items
-      .filter((s: any) => s.owner.id !== userId)
-      .map((playlist: any) => ({
-        id: playlist.id as string,
-        total: playlist.tracks.total as number,
-      }));
-
-    let bigData = [] as any[];
-
-    await Promise.all(
-      playlistIds.map(async (playlistData: { id: string; total: number }) => {
-        const promises = [];
-        for (let i = 0; i < playlistData.total; i += 100) {
-          promises.push(
-            makeRequest(
-              `playlists/${playlistData.id}/tracks`,
-              ctx.spotifyToken,
-              "GET",
-              { offset: i, limit: 100 },
-            ),
-          );
-        }
-
-        const responses = await Promise.all(promises);
-        const data = await Promise.all(responses.map((res) => res.json()));
-        bigData.push(data);
-      }),
-    );
-
-    let songNumber = 0;
-
-    for (const playlist of bigData) {
-      for (const s of playlist) {
-        for (const playlistItem of s.items) {
-          try {
-            const song = playlistItem.track;
-            const data = await addSongById(song.id, ctx.spotifyToken);
-            songNumber++;
-            console.log(
-              `ADDED SONG: ${data.name} by ${data.artist[0]?.name} (${songNumber}). ID: ${song.id}`,
-            );
-            await new Promise((resolve) => setTimeout(resolve, 500));
-          } catch (error) {
-            console.log(`ERROR: ${error}`);
-          }
-        }
-        console.log("DONE PLAYLIST");
-      }
-    }
-
-    return true;
-  }),
-  genres: spotifyProcedure.query(async ({ ctx }) => {
     let topArtists = (
       await (await makeRequest("me/top/artists", ctx.spotifyToken)).json()
     ).items as { name: string; genres: string[] }[];
@@ -328,23 +299,24 @@ export const spotifyRouter = createTRPCRouter({
       )}. `;
     });
 
-    let take = 50;
+    let howManyRandomSongs = 300;
+    const howManyToPick = 15;
 
-    let unlistenedSongs = [] as SongForOpenAI[];
+    let unlistenedSongs = [] as any[];
 
-    while (unlistenedSongs.length !== 15) {
+    while (unlistenedSongs.length !== howManyRandomSongs) {
       const ids = (
         await ctx.prisma.$queryRaw<
           {
             id: string;
           }[]
-        >`SELECT id FROM public."Song" ORDER BY random() LIMIT ${take}`
+        >`SELECT id FROM public."Song" ORDER BY random() LIMIT ${howManyRandomSongs}`
       ).map((r) => r.id);
 
       const randomSongs = (
         await ctx.prisma.song.findMany({
           where: { id: { in: ids } },
-          take: take,
+          take: howManyRandomSongs,
           include: {
             artist: true,
           },
@@ -358,70 +330,115 @@ export const spotifyRouter = createTRPCRouter({
         })),
       }));
 
-      await Promise.all(
-        randomSongs.map(async (song) => {
-          const isSaved = await (
-            await makeRequest(
-              `me/tracks/contains?ids=${song.id}`,
-              ctx.spotifyToken,
-            )
-          ).json();
+      for (const song of randomSongs) {
+        if (unlistenedSongs.length === howManyRandomSongs) break;
 
-          if (!isSaved) unlistenedSongs.push(song);
-        }),
-      );
+        // const isSaved = (await (
+        //   await makeRequest(
+        //     `me/tracks/contains?ids=${song.id}`,
+        //     ctx.spotifyToken,
+        //   )
+        // ).json()) as boolean[];
+
+        const checkIfInPlaylist = await ctx.prisma.playlistSongLink.findFirst({
+          where: {
+            songId: song.id,
+            playlist: { userId: ctx.session.user.id },
+          },
+        });
+
+        if (
+          // (!isSaved[0] && unlistenedSongs.length !== take) ||
+          !checkIfInPlaylist
+        ) {
+          console.log("ADDING UNLISTENED SONG", song.name, song.id);
+          unlistenedSongs.push(song);
+          console.log(unlistenedSongs.length);
+        } else {
+          console.log("DIDNT PICK THIS ONE", song.name, song.id);
+        }
+
+        // await new Promise((resolve) => setTimeout(resolve, 100));
+      }
     }
 
-    function formatSongs(
-      songs: {
-        name: string;
-        id: string;
-        artist: { name: string; genres: string[] }[];
-      }[],
-    ): string {
-      const songLines = songs.map((song) => {
-        const artists = song.artist.map((artist) => artist.name).join(", ");
+    function formatSongs(songs: any[], index: number): string {
+      const songLines = songs.map((song, i) => {
+        const artists = song.artist
+          .map((artist: any) => artist.name)
+          .join(", ");
         const genres = [
-          ...new Set(song.artist.flatMap((artist) => artist.genres)),
+          ...new Set(song.artist.flatMap((artist: any) => artist.genres)),
         ].join(", ");
-        return `${song.name} with its identifier code is '${song.id}' by ${artists} with the genres ${genres}`;
+        return `${song.name} with its identifier code is '${
+          index - i
+        }' by ${artists} with the genres ${genres}`;
       });
       return songLines.join(". ");
     }
 
-    let randomSongsString = formatSongs(unlistenedSongs);
+    const infoOne = `DONT SAY ANYTHING JUST REMEMBER PLEASE!! JUST Read this: My top artists and their respective genres are: ${artistsString}. DO NOT REPLY PLEASE. Please don't say anything back, just keep this in mind for the next query.`;
+    const infoSongs = (songs: string) =>
+      `DONT SAY ANYTHING JUST REMEMBER PLEASE!! Here are some songs: ${songs}. Please don't respond at all, just keep it in mind for my next prompt. DO NOT SAY ANYTHING`;
+    const paragraphInfo = `With that information, the first prompt shows my top artists and their respective genre's. Keep that in mind. Now the next ${
+      unlistenedSongs.length / 50
+    } prompt contains 50 random songs with their own respective genre, keep that in mind their genre and its identifier code. Please do not respond at all to what I just said, just keep it in mind.`;
+    const attemptPrompt = `From the last prompt, try and pick ${howManyToPick} songs given the artist and genres that you think I might enjoy. Please scan through all of them and don't make up your mind fast. Explore more overall genres, try one of each genre that I like. Please only return the identifier code and is found within the apostrophees in each song. Please return as an array of numbers of the identifier code from each individual song.`;
 
-    const infoOne = `My top artists and their respective genres are: ${artistsString}. Please don't respond, just keep it in mind.`;
-    const infoTwo = `Here are some random songs: ${randomSongsString}. Please don't respond at all, just keep it in mind for my next prompt.`;
-    const paragraphInfo = `With that information, the first paragraph shows my top artists and their respective genre's. Keep that in mind. Now the next paragraph contains 50 random songs with their own respective genre, keep that in mind their genre and its identifier code`;
-    const attemptPrompt = `I would like you to pick me 15 songs from the second paragraph, which could be similar to the genre's that I like. Explore more overall genres, try one of each genre that I like. If you can, to make it look like a algorithmic feed. Please only return the identifier code and is found within the apostrophees in each song. Don't include any genre or anything. Please return it in a JSON object with the field songs, which contains an array of strings of the identifier code from each individual song.`;
-
-    const prompts = [infoOne, infoTwo, paragraphInfo, attemptPrompt];
-    let all = "";
-    prompts.forEach((p) => (all += p + " "));
-
-    const configuration = new Configuration({
-      apiKey: process.env.OPENAI_APIKEY,
+    const api = new ChatGPTAPI({
+      apiKey: process.env.OPENAI_APIKEY!,
     });
 
-    const openai = new OpenAIApi(configuration);
+    console.log("STARTING OPENAI CONNECTION");
 
-    const request = await openai.createCompletion({
-      model: "text-chat-davinci-002-20230126",
-      prompt: all,
-      temperature: 0.5,
-      max_tokens: 600,
-      stop: ["\n\n\n"],
-    });
+    let songs = [] as string[];
 
-    let songs;
-    try {
-      songs = request.data.choices[0]?.text;
-      //@ts-ignore
-      songs = JSON.parse(songs.split("```")[1]?.split("```"[0]?.trim())).songs;
-    } catch (error) {
-      throw new TRPCError({ message: "openapi error", code: "BAD_REQUEST" });
+    const firstPrompt = await api.sendMessage(infoOne);
+    let conversationId = firstPrompt.conversationId!;
+    let parentMessageId = firstPrompt.parentMessageId!;
+    console.log("FIRST PROMPT:", firstPrompt.text);
+
+    for (let i = 0; i < unlistenedSongs.length; i += 50) {
+      let batch = unlistenedSongs.slice(i, i + 50);
+      const prompt = await api.sendMessage(
+        infoSongs(formatSongs(batch, i + 50)),
+        {
+          conversationId,
+          parentMessageId,
+        },
+      );
+      parentMessageId = prompt.id;
+      conversationId = prompt.conversationId!;
+      console.log("PRE-PROMPT SONGS:", prompt.text, i + 50);
+
+      const secondPrompt = await api.sendMessage(paragraphInfo, {
+        conversationId,
+        parentMessageId,
+      });
+      conversationId = secondPrompt.conversationId!;
+      parentMessageId = secondPrompt.parentMessageId!;
+      console.log("PRE-PROMPT INFO:", secondPrompt.text, i + 50);
+
+      const res = await api.sendMessage(attemptPrompt, {
+        conversationId,
+        parentMessageId,
+        stream: true,
+        onProgress: (partialResponse) => console.log(partialResponse.text),
+      });
+      parentMessageId = res.id;
+      conversationId = res.conversationId!;
+      try {
+        songs = [
+          ...songs,
+          JSON.parse(res.text.substring(0, res.text.length - 1)),
+        ];
+      } catch (error) {
+        songs = [...songs, JSON.parse(res.text)];
+      }
     }
+
+    songs = [].concat(...(songs as any));
+    songs = songs.map((s) => unlistenedSongs[parseInt(s) - 1].id);
 
     return await Promise.all(
       songs.map(async (id: string) => {
@@ -447,9 +464,3 @@ export const spotifyRouter = createTRPCRouter({
     );
   }),
 });
-
-type SongForOpenAI = {
-  name: string;
-  id: string;
-  artist: { name: string; genres: string[] }[];
-};

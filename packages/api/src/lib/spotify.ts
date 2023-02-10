@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
@@ -37,20 +39,24 @@ export const makeRequest = async (
     | "OPTIONS"
     | "HEAD",
   query?: any,
-): Promise<Response> =>
-  await fetch(`https://api.spotify.com/v1/${path}`, {
+): Promise<Response> => {
+  const r = await fetch(`https://api.spotify.com/v1/${path}`, {
     method,
-    headers: query
-      ? {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": `application/json`,
-          query,
-        }
-      : {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": `application/json`,
-        },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": `application/json`,
+    },
+    ...query,
   });
+
+  if (r.status === 429)
+    throw new TRPCError({
+      message: "rate limited by spotify",
+      code: "TOO_MANY_REQUESTS",
+    });
+
+  return r;
+};
 
 export interface SongResponseType {
   spotify_id: string;

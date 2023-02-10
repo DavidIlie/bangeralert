@@ -9,6 +9,7 @@ import { FaSpotify } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 
 import { getServerSession } from "@acme/auth/backend";
+import { api } from "../lib/api";
 
 const SignIn: NextPage = () => {
   const { callbackUrl, error } = useRouter().query as {
@@ -25,15 +26,17 @@ const SignIn: NextPage = () => {
     }
   }, [callbackUrl, push]);
 
+  const { data } = api.base.getDBSize.useQuery();
+
   return (
     <>
       <NextSeo title="Sign In" />
-      <div className="flex items-center justify-center flex-grow py-12 sm:px-6 lg:px-8">
+      <div className="flex flex-grow items-center justify-center py-12 sm:px-6 lg:px-8">
         <div className="w-full sm:mx-auto sm:max-w-md">
-          <h1 className="mb-4 text-4xl font-medium text-center">BangerAlert</h1>
-          <div className="px-4 py-6 border-2 shadow bg-dark-containers dark:border-gray-800 sm:rounded-lg sm:border-r sm:border-l sm:px-10">
+          <h1 className="mb-4 text-center text-4xl font-medium">BangerAlert</h1>
+          <div className="border-2 bg-dark-containers px-4 py-6 shadow dark:border-gray-800 sm:rounded-lg sm:border-r sm:border-l sm:px-10">
             {isError && (
-              <div className="relative px-3 py-3 mb-4 bg-red-600 bg-opacity-50 rounded">
+              <div className="relative mb-4 rounded bg-red-600 bg-opacity-50 px-3 py-3">
                 <div className="flex items-center justify-between">
                   <h1 className="text-xl font-semibold">
                     There has been an error!
@@ -53,14 +56,14 @@ const SignIn: NextPage = () => {
                 <p className="text-sm">
                   There has been an error trying to signin to your account.
                 </p>
-                <p className="px-2 mt-1 font-mono bg-gray-800 rounded w-min">
+                <p className="mt-1 w-min rounded bg-gray-800 px-2 font-mono">
                   {error}
                 </p>
               </div>
             )}
-            <div className="flex flex-col justify-center -mb-1">
+            <div className="-mb-1 flex flex-col justify-center">
               <button
-                className="relative inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium text-white duration-150 bg-green-600 border border-green-900 rounded-md shadow-sm hover:border-green-800 hover:bg-green-700 sm:rounded-lg sm:py-6 sm:px-12 sm:text-2xl sm:font-semibold"
+                className="relative inline-flex items-center justify-center gap-2 rounded-md border border-green-900 bg-green-600 px-6 py-3 text-base font-medium text-white shadow-sm duration-150 hover:border-green-800 hover:bg-green-700 sm:rounded-lg sm:py-6 sm:px-12 sm:text-2xl sm:font-semibold"
                 onClick={() =>
                   callbackUrl
                     ? signIn("spotify", {
@@ -73,7 +76,7 @@ const SignIn: NextPage = () => {
                 Sign in with Spotify
               </button>
               <div className="mt-4">
-                <p className="text-xs prose-sm prose text-gray-500">
+                <p className="prose-sm prose text-xs text-gray-500">
                   By signing in, you agree to the{" "}
                   <Link href="/info/terms-of-service" className="text-blue-600">
                     Terms of Service
@@ -87,6 +90,14 @@ const SignIn: NextPage = () => {
               </div>
             </div>
           </div>
+          <p
+            className={`${
+              typeof data === "number" ? "visible" : "invisible"
+            } mt-1 text-center italic text-gray-500`}
+          >
+            Currently keeping track of <span className="font-bold">{data}</span>{" "}
+            songs.
+          </p>
         </div>
       </div>
     </>

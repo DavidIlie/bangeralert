@@ -1,31 +1,48 @@
 import moment from "moment";
-import { makeRequest, parseSong, SongResponseType } from "./spotify";
+import { TRPCError } from "@trpc/server";
 
+import { makeRequest, parseSong, SongResponseType } from "./spotify";
 import { prisma } from "@acme/db";
 
 export const getArtistData = async (artist: any, token: string) => {
   let r = await makeRequest(`artists/${artist.spotify_id}`, token);
   let extra = {};
-  if (r.status === 200) {
-    const response = await r.json();
-    extra = {
-      genres: response.genres as string[],
-      followers: response.followers.total as number,
-      popularity: response.popularity as number,
-      cover_url: response.images[0].url || response.images.albumImageUrl || "",
+  try {
+    if (r.status === 200) {
+      const response = await r.json();
+      try {
+        extra = {
+          genres: response.genres as string[],
+          followers: response.followers.total as number,
+          popularity: response.popularity as number,
+          cover_url: response.images[0].url,
+        };
+      } catch (error) {
+        extra = {
+          genres: response.genres as string[],
+          followers: response.followers.total as number,
+          popularity: response.popularity as number,
+          cover_url: response.images.albumImageUrl || "",
+        };
+      }
+    }
+    return {
+      create: {
+        spotify_id: artist.spotify_id,
+        external_url: artist.external_url,
+        name: artist.name,
+        ...extra,
+      },
+      where: {
+        spotify_id: artist.spotify_id,
+      },
     };
+  } catch (error) {
+    throw new TRPCError({
+      message: "failed getting artist data",
+      code: "BAD_REQUEST",
+    });
   }
-  return {
-    create: {
-      spotify_id: artist.spotify_id,
-      external_url: artist.external_url,
-      name: artist.name,
-      ...extra,
-    },
-    where: {
-      spotify_id: artist.spotify_id,
-    },
-  };
 };
 
 export const addSongByObject = async (
@@ -34,11 +51,10 @@ export const addSongByObject = async (
 ) => {
   let artistArray = [] as any;
 
-  await Promise.all(
-    song.artist.map(async (artist) => {
-      artistArray.push(await getArtistData(artist, token));
-    }),
-  );
+  for (const artist of song.artist) {
+    artistArray.push(await getArtistData(artist, token));
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
 
   const baseSong = {
     explicit: song.explicit,

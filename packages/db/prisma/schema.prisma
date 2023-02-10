@@ -144,8 +144,7 @@ model Song {
 
 model PlaylistSongLink {
   id         String   @default(uuid())
-  songSpotId String   @id
-  songId     String
+  songId     String @id
   song       Song     @relation(fields: [songId], references: [spotify_id], onDelete: Cascade)
   playlistId String
   playlist   Playlist @relation(fields: [playlistId], references: [spotify_id], onDelete: Cascade)
@@ -156,13 +155,15 @@ model Playlist {
   spotify_id    String             @id
   userId        String?
   created       DateTime           @default(now())
-  description   String
+  description   String?
   photo         String
   user          User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
   songs         PlaylistSongLink[]
   followers     Int
   spotify_url   String
   collaborative Boolean
+  private       Boolean
+  name          String
 }
 
 enum FollowType {
