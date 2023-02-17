@@ -140,14 +140,25 @@ model Song {
   interactions Interaction[] @relation("interactionSong")
 
   playlists PlaylistSongLink[]
+  feeds     FeedSong[]
 }
 
 model PlaylistSongLink {
   id         String   @default(uuid())
-  songId     String @id
+  songId     String   @id
   song       Song     @relation(fields: [songId], references: [spotify_id], onDelete: Cascade)
   playlistId String
   playlist   Playlist @relation(fields: [playlistId], references: [spotify_id], onDelete: Cascade)
+}
+
+model FeedSong {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  songId        String
+  song          Song     @relation(fields: [songId], references: [spotify_id], onDelete: Cascade)
+  hasInteracted Boolean
+  added         DateTime @default(now())
 }
 
 model Playlist {
@@ -236,6 +247,8 @@ model User {
   star           Star[]
 
   playlist Playlist[]
+
+  feedSongs FeedSong[]
 }
 
 model VerificationToken {

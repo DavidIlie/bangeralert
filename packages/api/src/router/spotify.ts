@@ -264,13 +264,12 @@ export const spotifyRouter = createTRPCRouter({
         allDBSongsId.map((song) => {
           return ctx.prisma.playlistSongLink.upsert({
             where: {
-              songSpotId: song.spotify_id,
+              songId: song.spotify_id,
             },
             update: {
               songId: song.spotify_id,
             },
             create: {
-              songSpotId: song.spotify_id,
               songId: song.spotify_id,
               playlistId: prismaPlaylist.spotify_id,
             },
