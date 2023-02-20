@@ -346,10 +346,29 @@ export const spotifyRouter = createTRPCRouter({
           },
         });
 
+        let passFeed = false;
+        const checkIfInFeed = await ctx.prisma.feedSong.findFirst({
+          where: { songId: song.id, userId: ctx.session.user.id },
+        });
+
+        if (!checkIfInFeed) {
+          passFeed = true;
+        } else {
+          if (!checkIfInFeed?.hasInteracted) {
+            await ctx.prisma.feedSong.delete({
+              where: { id: checkIfInFeed?.id },
+            });
+            passFeed = true;
+          } else {
+            passFeed = false;
+          }
+        }
+
         if (
           // (!isSaved[0] && unlistenedSongs.length !== take) ||
           !checkIfInPlaylist
         ) {
+          if (!passFeed) return;
           console.log("ADDING UNLISTENED SONG", song.name, song.id);
           unlistenedSongs.push(song);
           console.log(unlistenedSongs.length);
@@ -439,27 +458,14 @@ export const spotifyRouter = createTRPCRouter({
     songs = [].concat(...(songs as any));
     songs = songs.map((s) => unlistenedSongs[parseInt(s) - 1].id);
 
-    return await Promise.all(
-      songs.map(async (id: string) => {
-        let data = await ctx.prisma.song.findFirst({
-          where: { spotify_id: id },
-          include: { artist: true },
-        });
-
-        if (!data)
-          throw new TRPCError({
-            message: "internal server error",
-            code: "INTERNAL_SERVER_ERROR",
-          });
-        return {
-          name: data.name,
-          id: data.id,
-          artist: data.artist?.map((artist) => ({
-            name: artist.name,
-            genres: artist.genres,
-          })),
-        };
-      }),
+    await ctx.prisma.$transaction(
+      songs.map((id: string) =>
+        ctx.prisma.feedSong.create({
+          data: { songId: id, userId: ctx.session.user.id },
+        }),
+      ),
     );
+
+    return songs;
   }),
 });

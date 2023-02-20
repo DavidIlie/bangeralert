@@ -152,12 +152,12 @@ model PlaylistSongLink {
 }
 
 model FeedSong {
-  id            String   @id @default(uuid())
+  id            String   @id @unique @default(uuid())
   userId        String
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  songId        String
+  songId        String 
   song          Song     @relation(fields: [songId], references: [spotify_id], onDelete: Cascade)
-  hasInteracted Boolean
+  hasInteracted Boolean  @default(false)
   added         DateTime @default(now())
 }
 
