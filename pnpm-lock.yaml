@@ -39,6 +39,7 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/runtime': ^7.19.0
+      '@expo/vector-icons': ^13.0.0
       '@react-navigation/native': ^6.1.2
       '@react-navigation/native-stack': ^6.9.8
       '@tanstack/react-query': ^4.20.4
@@ -70,6 +71,7 @@ importers:
       '@acme/api': link:../../packages/api
       '@acme/auth': link:../../packages/auth
       '@acme/tailwind-config': link:../../packages/config/tailwind
+      '@expo/vector-icons': 13.0.0
       '@react-navigation/native': 6.1.2_tj3nonr5gneraukzjkxpsiy7yu
       '@react-navigation/native-stack': 6.9.8_4yxn5o6hbqm4eqjpnbll7jojyu
       '@tanstack/react-query': 4.22.0_2bkajway7msrchxwrvhplxy5ru

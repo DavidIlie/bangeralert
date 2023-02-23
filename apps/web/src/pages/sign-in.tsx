@@ -34,7 +34,7 @@ const SignIn: NextPage = () => {
       <div className="flex flex-grow items-center justify-center py-12 sm:px-6 lg:px-8">
         <div className="w-full sm:mx-auto sm:max-w-md">
           <h1 className="mb-4 text-center text-4xl font-medium">BangerAlert</h1>
-          <div className="border-2 bg-dark-containers px-4 py-6 shadow dark:border-gray-800 sm:rounded-lg sm:border-r sm:border-l sm:px-10">
+          <div className="border-2 border-gray-800 bg-dark-containers px-4 py-6 shadow sm:rounded-lg sm:border-r sm:border-l sm:px-10">
             {isError && (
               <div className="relative mb-4 rounded bg-red-600 bg-opacity-50 px-3 py-3">
                 <div className="flex items-center justify-between">
