@@ -1,12 +1,16 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { spotifyProcedure, createTRPCRouter } from "../trpc";
-
 import { ChatGPTAPI } from "chatgpt";
 
+import { spotifyProcedure, createTRPCRouter } from "../trpc";
 import { addSongById, addSongByObject } from "../lib/addSong";
-import { makeRequest, parseSong, SongResponseType } from "../lib/spotify";
-import { basicIncludeForSong, getStarAvg } from "./feed";
+import {
+  makeRequest,
+  parseSong,
+  SongResponseType,
+  basicIncludeForSong,
+  embedStarAvgToSong,
+} from "../lib/spotify";
 import { parseSpotifyUrl } from "../lib/parseSpotifyUrl";
 
 export const spotifyRouter = createTRPCRouter({
@@ -101,7 +105,7 @@ export const spotifyRouter = createTRPCRouter({
       });
 
       if (prismaSong) {
-        return getStarAvg<typeof prismaSong>(prismaSong);
+        return embedStarAvgToSong<typeof prismaSong>(prismaSong);
       }
 
       return parseSong((response as any).item);
@@ -131,7 +135,7 @@ export const spotifyRouter = createTRPCRouter({
       });
 
       if (prismaSong) {
-        return getStarAvg<typeof prismaSong>(prismaSong);
+        return embedStarAvgToSong<typeof prismaSong>(prismaSong);
       }
 
       return parseSong(
@@ -401,7 +405,7 @@ export const spotifyRouter = createTRPCRouter({
     const paragraphInfo = `With that information, the first prompt shows my top artists and their respective genre's. Keep that in mind. Now the next ${
       unlistenedSongs.length / 50
     } prompt contains 50 random songs with their own respective genre, keep that in mind their genre and its identifier code. Please do not respond at all to what I just said, just keep it in mind.`;
-    const attemptPrompt = `From the last prompt, try and pick ${howManyToPick} songs given the artist and genres that you think I might enjoy. Please scan through all of them and don't make up your mind fast. Explore more overall genres, try one of each genre that I like. Please only return the identifier code and is found within the apostrophees in each song. Please return as an array of numbers of the identifier code from each individual song.`;
+    const attemptPrompt = `From the last prompt, try and pick ${howManyToPick} songs given the artist and genres that you think I might enjoy. Please scan through all of them and don't make up your mind fast. Explore more overall genres, try one of each genre that I like. Please only return (no words no anything) the identifier code and is found within the apostrophees in each song. Please return as an array of numbers of the identifier code from each individual song.`;
 
     const api = new ChatGPTAPI({
       apiKey: process.env.OPENAI_APIKEY!,
@@ -440,7 +444,6 @@ export const spotifyRouter = createTRPCRouter({
       const res = await api.sendMessage(attemptPrompt, {
         conversationId,
         parentMessageId,
-        stream: true,
         onProgress: (partialResponse) => console.log(partialResponse.text),
       });
       parentMessageId = res.id;
@@ -456,12 +459,16 @@ export const spotifyRouter = createTRPCRouter({
     }
 
     songs = [].concat(...(songs as any));
-    songs = songs.map((s) => unlistenedSongs[parseInt(s) - 1].id);
+    songs = [...new Set(songs.map((s) => unlistenedSongs[parseInt(s) - 1].id))];
 
     await ctx.prisma.$transaction(
       songs.map((id: string) =>
         ctx.prisma.feedSong.create({
-          data: { songId: id, userId: ctx.session.user.id },
+          data: {
+            songId: id,
+            userId: ctx.session.user.id,
+            specialId: `${id}-${ctx.session.user.id}`,
+          },
         }),
       ),
     );
