@@ -23,7 +23,27 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
-  const session = await getServerSession({ req, res });
+  if (req.headers["isexpo"] === "true") {
+    const sessionToken = req.headers.sessiontoken as string;
+    const reqCookie = req.headers.cookie ?? "";
+    const parsedCookies = reqCookie.split("; ").reduce((acc, cookie) => {
+      const [key, value] = cookie.split("=");
+      acc[key as string] = value as string;
+      return acc;
+    }, {} as { [key: string]: string });
+    parsedCookies[`${false ? "__Secure-" : ""}next-auth.session-token`] =
+      sessionToken;
+    const newCookie = Object.entries(parsedCookies)
+      .reduce((acc, [key, value]) => {
+        acc.push(`${key}=${value}`);
+        return acc;
+      }, [] as string[])
+      .join("; ");
+
+    req.headers.cookie = newCookie;
+  }
+
+  let session = await getServerSession({ req, res });
 
   if (!session) {
     return createInnerTRPCContext({

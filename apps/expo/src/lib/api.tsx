@@ -22,6 +22,8 @@ import { httpBatchLink } from "@trpc/client";
 import { transformer } from "@acme/api/transformer";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
+import * as SecureStore from "expo-secure-store";
+
 export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -32,6 +34,15 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
+          async headers() {
+            const sessionToken = await SecureStore.getItemAsync(
+              "next-auth.sessionToken",
+            );
+            return {
+              isexpo: "true",
+              sessionToken: sessionToken || "",
+            };
+          },
         }),
       ],
     }),

@@ -6,7 +6,6 @@ import { defaultDivProps } from "../defaultProps";
 import { api, RouterOutputs } from "../../lib/api";
 import SongPlayWrapper from "./SongPlayWrapper";
 import { MdOutlineExplicit } from "react-icons/md";
-import StarRating from "../StarRating";
 import { SongResponseType } from "@acme/api/src/lib/spotify";
 import SongStars from "./SongStars";
 
