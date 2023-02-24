@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { signOut } from "next-auth/expo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Device from "expo-device";
@@ -25,9 +25,25 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
       }}
     >
       <View className="mb-2 border-b border-gray-500 p-1.5 px-3">
-        <Text className="text-lg font-bold text-white">
-          Welcome {data.user.name}
-        </Text>
+        <View className="flex-row items-center gap-2">
+          <Image
+            className="h-10 w-10 rounded-full"
+            source={{
+              uri: data.user.image!,
+            }}
+          />
+          <View>
+            <Text className="text-lg font-bold text-white">
+              Welcome {data.user.name}
+            </Text>
+            <Text className="-mt-1 text-sm text-gray-300">
+              @{data.user.username}
+            </Text>
+            <Text className="text-xs text-gray-300">
+              {data.user.followers} Followers - {data.user.following} Following
+            </Text>
+          </View>
+        </View>
       </View>
       <DrawerItemList {...props} />
       <SafeAreaView className="absolute bottom-0 w-full">

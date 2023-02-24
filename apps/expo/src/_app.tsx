@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SessionProvider, useSession } from "next-auth/expo";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -10,10 +10,11 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { HomeScreen } from "./screens/home";
 import { SignInScreen } from "./screens/signin";
 
-import { getBaseUrl, TRPCProvider } from "./lib/api";
+import { TRPCProvider } from "./lib/api";
 import { appTheme } from "./lib/theme";
 
 import CustomDrawer from "./ui/CustomDrawer";
+import { Feather } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -39,8 +40,26 @@ const InnerApp = () => {
         ) : (
           <Drawer.Navigator
             drawerContent={(props) => <CustomDrawer {...props} />}
+            screenOptions={{
+              headerRight: () => (
+                <TouchableOpacity>
+                  <Feather
+                    name="plus"
+                    size={24}
+                    color="#007afd"
+                    style={{ marginRight: "8%" }}
+                  />
+                </TouchableOpacity>
+              ),
+            }}
           >
-            <Drawer.Screen name="Home" component={HomeScreen} />
+            <Drawer.Screen
+              name="Feed"
+              options={{
+                drawerLabel: "Home",
+              }}
+              component={HomeScreen}
+            />
           </Drawer.Navigator>
         )}
       </NavigationContainer>
@@ -51,7 +70,7 @@ const InnerApp = () => {
 
 export const App = () => {
   return (
-    <SessionProvider baseUrl={getBaseUrl()}>
+    <SessionProvider>
       <TRPCProvider>
         <InnerApp />
       </TRPCProvider>

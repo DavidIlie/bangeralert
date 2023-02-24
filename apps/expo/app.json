@@ -32,7 +32,8 @@
     "extra": {
       "eas": {
         "projectId": "768478b6-46cd-43a3-904b-f4d5065648d2"
-      }
+      },
+      "nextAuthUrl": "http://localhost:3000"
     }
   }
 }
