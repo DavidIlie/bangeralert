@@ -43,6 +43,7 @@ importers:
       '@react-navigation/drawer': ^6.6.0
       '@react-navigation/native': ^6.1.2
       '@react-navigation/native-stack': ^6.9.8
+      '@shopify/flash-list': ^1.4.1
       '@tanstack/react-query': ^4.20.4
       '@trpc/client': ^10.8.1
       '@trpc/react-query': ^10.8.1
@@ -79,6 +80,7 @@ importers:
       '@react-navigation/drawer': 6.6.0_pbnbn4ihptomkigifsd6ntadqy
       '@react-navigation/native': 6.1.2_tj3nonr5gneraukzjkxpsiy7yu
       '@react-navigation/native-stack': 6.9.8_4yxn5o6hbqm4eqjpnbll7jojyu
+      '@shopify/flash-list': 1.4.1_fe2krar3w7oppftlpocrmufp6u
       '@tanstack/react-query': 4.22.0_2bkajway7msrchxwrvhplxy5ru
       '@trpc/client': 10.8.1_@trpc+server@10.8.1
       '@trpc/react-query': 10.8.1_da32cyfrb5av7mggbl45dqsvbq
@@ -91,7 +93,7 @@ importers:
       expo-secure-store: 12.0.0_expo@47.0.13
       expo-status-bar: 1.4.2
       nativewind: 2.0.11_f3xea42f6zrwqyr5c6mbkdauxa
-      next-auth: 4.12.0_drtws7regytwpuddb5r2l6r2hu_ef5jwxihqo6n7gxfmzogljlgcm
+      next-auth: 4.12.0_azwnqlwjori5xtryrcq6yusr24_ef5jwxihqo6n7gxfmzogljlgcm
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-native: 0.70.5_lahc5xespok57ijioavxabv3he
@@ -2946,6 +2948,20 @@ packages:
     dependencies:
       component-type: 1.2.1
       join-component: 1.1.0
+    dev: false
+
+  /@shopify/flash-list/1.4.1_fe2krar3w7oppftlpocrmufp6u:
+    resolution: {integrity: sha512-yM5dlhqolO/R8FKomqCrSYz0Cc82vJDikxhbu1CXXGp3rPvo/ceP9jJyKueW96SXHsn/87fcSq2BjztWjlp74Q==}
+    peerDependencies:
+      '@babel/runtime': '*'
+      react: '*'
+      react-native: '*'
+    dependencies:
+      '@babel/runtime': 7.20.7
+      react: 18.1.0
+      react-native: 0.70.5_lahc5xespok57ijioavxabv3he
+      recyclerlistview: 4.2.0_tj3nonr5gneraukzjkxpsiy7yu
+      tslib: 2.4.0
     dev: false
 
   /@sideway/address/4.1.4:
@@ -7713,6 +7729,32 @@ packages:
     resolution: {integrity: sha512-SrQrok4CATudVzBS7coSz26QRSmlK9TzzoFbeKfcPBUFPjcQM9Rqvr/DlJkOrwI/0KcgvMub1n1g5Jt9EgRn4A==}
     dev: false
 
+  /next-auth/4.12.0_azwnqlwjori5xtryrcq6yusr24_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-TqNJBsVavN60ZkZmoe/YZ13qODuMeXxGgVkpbf8ukB8S7KPKxm+zZPPY76vtTppbPFl6PqFIxzEhNodB2nDStg==}
+    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
+    peerDependencies:
+      next: 12.2.5
+      nodemailer: ^6.6.5
+      react: ^17.0.2 || ^18
+      react-dom: ^17.0.2 || ^18
+    peerDependenciesMeta:
+      nodemailer:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.7
+      '@panva/hkdf': 1.0.2
+      cookie: 0.5.0
+      jose: 4.11.2
+      oauth: 0.9.15
+      openid-client: 5.3.1
+      preact: 10.11.3
+      preact-render-to-string: 5.2.6_preact@10.11.3
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      uuid: 8.3.2
+    dev: false
+    patched: true
+
   /next-auth/4.12.0_drtws7regytwpuddb5r2l6r2hu_7jnwqgtpcnwg4nzft4b6xlzlfi:
     resolution: {integrity: sha512-TqNJBsVavN60ZkZmoe/YZ13qODuMeXxGgVkpbf8ukB8S7KPKxm+zZPPY76vtTppbPFl6PqFIxzEhNodB2nDStg==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
@@ -7762,32 +7804,6 @@ packages:
       preact-render-to-string: 5.2.6_preact@10.11.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      uuid: 8.3.2
-    dev: false
-    patched: true
-
-  /next-auth/4.12.0_drtws7regytwpuddb5r2l6r2hu_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-TqNJBsVavN60ZkZmoe/YZ13qODuMeXxGgVkpbf8ukB8S7KPKxm+zZPPY76vtTppbPFl6PqFIxzEhNodB2nDStg==}
-    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
-    peerDependencies:
-      next: 12.2.5
-      nodemailer: ^6.6.5
-      react: ^17.0.2 || ^18
-      react-dom: ^17.0.2 || ^18
-    peerDependenciesMeta:
-      nodemailer:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.7
-      '@panva/hkdf': 1.0.2
-      cookie: 0.5.0
-      jose: 4.11.2
-      oauth: 0.9.15
-      openid-client: 5.3.1
-      preact: 10.11.3
-      preact-render-to-string: 5.2.6_preact@10.11.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
       uuid: 8.3.2
     dev: false
     patched: true
@@ -9121,6 +9137,19 @@ packages:
       tslib: 2.4.1
     dev: false
 
+  /recyclerlistview/4.2.0_tj3nonr5gneraukzjkxpsiy7yu:
+    resolution: {integrity: sha512-uuBCi0c+ggqHKwrzPX4Z/mJOzsBbjZEAwGGmlwpD/sD7raXixdAbdJ6BTcAmuWG50Cg4ru9p12M94Njwhr/27A==}
+    peerDependencies:
+      react: '>= 15.2.1'
+      react-native: '>= 0.30.0'
+    dependencies:
+      lodash.debounce: 4.0.8
+      prop-types: 15.8.1
+      react: 18.1.0
+      react-native: 0.70.5_lahc5xespok57ijioavxabv3he
+      ts-object-utils: 0.0.5
+    dev: false
+
   /regenerate-unicode-properties/10.1.0:
     resolution: {integrity: sha512-d1VudCLoIGitcU/hEg2QqvyGZQmdC0Lf8BqdOMXGFSvJP4bNV1+XqbPQeHHLD51Jh4QJJ225dlIFvY4Ly6MXmQ==}
     engines: {node: '>=4'}
@@ -10192,6 +10221,10 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: false
 
+  /ts-object-utils/0.0.5:
+    resolution: {integrity: sha512-iV0GvHqOmilbIKJsfyfJY9/dNHCs969z3so90dQWsO1eMMozvTpnB1MEaUbb3FYtZTGjv5sIy/xmslEz0Rg2TA==}
+    dev: false
+
   /tsconfig-paths/3.14.1:
     resolution: {integrity: sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==}
     dependencies:
@@ -10203,6 +10236,10 @@ packages:
 
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
+
+  /tslib/2.4.0:
+    resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
+    dev: false
 
   /tslib/2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
