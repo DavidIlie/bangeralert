@@ -169,7 +169,7 @@ importers:
       '@trpc/react-query': 10.8.1_krdvppocpp5g6rpv2pnlhwexoi
       '@trpc/server': 10.8.1
       next: 13.1.2_biqbaboplfbrettd7655fr4n2y
-      next-auth: 4.12.0_drtws7regytwpuddb5r2l6r2hu_7jnwqgtpcnwg4nzft4b6xlzlfi
+      next-auth: 4.12.0_azwnqlwjori5xtryrcq6yusr24_7jnwqgtpcnwg4nzft4b6xlzlfi
       next-seo: 5.15.0_7jnwqgtpcnwg4nzft4b6xlzlfi
       nextjs-progressbar: 0.0.16_next@13.1.2+react@18.2.0
       react: 18.2.0
@@ -228,7 +228,7 @@ importers:
     dependencies:
       '@acme/db': link:../db
       '@next-auth/prisma-adapter': 1.0.4_next-auth@4.12.0
-      next-auth: 4.12.0_drtws7regytwpuddb5r2l6r2hu_biqbaboplfbrettd7655fr4n2y
+      next-auth: 4.12.0_azwnqlwjori5xtryrcq6yusr24_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
@@ -2292,7 +2292,7 @@ packages:
       '@prisma/client': '>=2.26.0 || >=3'
       next-auth: ^4
     dependencies:
-      next-auth: 4.12.0_drtws7regytwpuddb5r2l6r2hu_biqbaboplfbrettd7655fr4n2y
+      next-auth: 4.12.0_azwnqlwjori5xtryrcq6yusr24_biqbaboplfbrettd7655fr4n2y
     dev: false
 
   /@next/env/13.1.2:
@@ -7729,33 +7729,7 @@ packages:
     resolution: {integrity: sha512-SrQrok4CATudVzBS7coSz26QRSmlK9TzzoFbeKfcPBUFPjcQM9Rqvr/DlJkOrwI/0KcgvMub1n1g5Jt9EgRn4A==}
     dev: false
 
-  /next-auth/4.12.0_azwnqlwjori5xtryrcq6yusr24_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-TqNJBsVavN60ZkZmoe/YZ13qODuMeXxGgVkpbf8ukB8S7KPKxm+zZPPY76vtTppbPFl6PqFIxzEhNodB2nDStg==}
-    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
-    peerDependencies:
-      next: 12.2.5
-      nodemailer: ^6.6.5
-      react: ^17.0.2 || ^18
-      react-dom: ^17.0.2 || ^18
-    peerDependenciesMeta:
-      nodemailer:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.7
-      '@panva/hkdf': 1.0.2
-      cookie: 0.5.0
-      jose: 4.11.2
-      oauth: 0.9.15
-      openid-client: 5.3.1
-      preact: 10.11.3
-      preact-render-to-string: 5.2.6_preact@10.11.3
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      uuid: 8.3.2
-    dev: false
-    patched: true
-
-  /next-auth/4.12.0_drtws7regytwpuddb5r2l6r2hu_7jnwqgtpcnwg4nzft4b6xlzlfi:
+  /next-auth/4.12.0_azwnqlwjori5xtryrcq6yusr24_7jnwqgtpcnwg4nzft4b6xlzlfi:
     resolution: {integrity: sha512-TqNJBsVavN60ZkZmoe/YZ13qODuMeXxGgVkpbf8ukB8S7KPKxm+zZPPY76vtTppbPFl6PqFIxzEhNodB2nDStg==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
     peerDependencies:
@@ -7782,7 +7756,7 @@ packages:
     dev: false
     patched: true
 
-  /next-auth/4.12.0_drtws7regytwpuddb5r2l6r2hu_biqbaboplfbrettd7655fr4n2y:
+  /next-auth/4.12.0_azwnqlwjori5xtryrcq6yusr24_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-TqNJBsVavN60ZkZmoe/YZ13qODuMeXxGgVkpbf8ukB8S7KPKxm+zZPPY76vtTppbPFl6PqFIxzEhNodB2nDStg==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
     peerDependencies:
@@ -7804,6 +7778,32 @@ packages:
       preact-render-to-string: 5.2.6_preact@10.11.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      uuid: 8.3.2
+    dev: false
+    patched: true
+
+  /next-auth/4.12.0_azwnqlwjori5xtryrcq6yusr24_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-TqNJBsVavN60ZkZmoe/YZ13qODuMeXxGgVkpbf8ukB8S7KPKxm+zZPPY76vtTppbPFl6PqFIxzEhNodB2nDStg==}
+    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
+    peerDependencies:
+      next: 12.2.5
+      nodemailer: ^6.6.5
+      react: ^17.0.2 || ^18
+      react-dom: ^17.0.2 || ^18
+    peerDependenciesMeta:
+      nodemailer:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.7
+      '@panva/hkdf': 1.0.2
+      cookie: 0.5.0
+      jose: 4.11.2
+      oauth: 0.9.15
+      openid-client: 5.3.1
+      preact: 10.11.3
+      preact-render-to-string: 5.2.6_preact@10.11.3
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       uuid: 8.3.2
     dev: false
     patched: true
