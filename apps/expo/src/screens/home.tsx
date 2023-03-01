@@ -38,40 +38,38 @@ export const HomeScreen = () => {
               <Pressable onPress={() => Linking.openURL(song.external_url)}>
                 <Image
                   source={{ uri: song.album[0]?.cover_url! }}
-                  style={{ height: 150, width: 150, borderRadius: 5 }}
+                  style={{ height: 150, width: 100, borderRadius: 5 }}
                 />
               </Pressable>
               <View>
-                <View>
-                  {song.name.length > 20 ? (
-                    <>
-                      <Text className="text-md text-white" numberOfLines={1}>
-                        {song.name}
-                      </Text>
-                      <View className="flex items-center gap-0.5">
-                        <View className="flex">
-                          <Text className="font-xs text-gray-300">
-                            {song.album[0]?.name}
-                          </Text>
-                          <View className="mx-0.5" />
-                          <Text className="font-xs text-gray-300">
-                            {song.artist[0]?.name}
-                          </Text>
-                        </View>
-                        {song.explicit && (
-                          <MaterialIcons
-                            name="explicit"
-                            size={24}
-                            color="#d1d5db"
-                            className="mt-[0.05rem]"
-                          />
-                        )}
+                {song.name.length > 20 ? (
+                  <>
+                    <Text className="text-md text-white" numberOfLines={1}>
+                      {song.name}
+                    </Text>
+                    <View className="flex items-center gap-0.5">
+                      <View className="flex">
+                        <Text className="font-xs text-gray-300">
+                          {song.album[0]?.name}
+                        </Text>
+                        <View className="mx-0.5" />
+                        <Text className="font-xs text-gray-300">
+                          {song.artist[0]?.name}
+                        </Text>
                       </View>
-                    </>
-                  ) : (
-                    <Text className="text-white">Hey</Text>
-                  )}
-                </View>
+                      {song.explicit && (
+                        <MaterialIcons
+                          name="explicit"
+                          size={24}
+                          color="#d1d5db"
+                          className="mt-[0.05rem]"
+                        />
+                      )}
+                    </View>
+                  </>
+                ) : (
+                  <Text className="text-white">Hey</Text>
+                )}
               </View>
             </View>
           )}
