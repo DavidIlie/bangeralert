@@ -31,8 +31,11 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
       acc[key as string] = value as string;
       return acc;
     }, {} as { [key: string]: string });
-    parsedCookies[`${false ? "__Secure-" : ""}next-auth.session-token`] =
-      sessionToken;
+    parsedCookies[
+      `${
+        process.env.NODE_ENV === "production" ? "__Secure-" : ""
+      }next-auth.session-token`
+    ] = sessionToken;
     const newCookie = Object.entries(parsedCookies)
       .reduce((acc, [key, value]) => {
         acc.push(`${key}=${value}`);
