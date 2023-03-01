@@ -29,7 +29,7 @@ export const SignInScreen: React.FC = () => {
         </View>
         <Text
           className={`${
-            typeof data === "number" ? "visible" : "invisible"
+            typeof data !== "number" && "opacity-0"
           } text-center italic text-gray-500`}
         >
           Currently keeping track of <Text className="font-bold">{data}</Text>{" "}
