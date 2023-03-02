@@ -34,7 +34,7 @@ export const HomeScreen = () => {
           data={feed}
           ItemSeparatorComponent={() => <View className="h-8" />}
           renderItem={({ item: song }) => (
-            <View className="mx-auto w-full flex-row gap-4 rounded-lg bg-dark-containers px-2 py-3">
+            <View className="mx-auto w-full flex-row gap-4 rounded-lg bg-dark-containers px-2 pb-3">
               <Pressable onPress={() => Linking.openURL(song.external_url)}>
                 <Image
                   source={{ uri: song.album[0]?.cover_url! }}
