@@ -26,6 +26,7 @@
     "@trpc/server": "^10.8.1",
     "expo": "~47.0.13",
     "expo-auth-session": "^3.8.0",
+    "expo-av": "~13.0.3",
     "expo-constants": "^14.0.2",
     "expo-device": "~5.0.0",
     "expo-random": "^13.0.0",

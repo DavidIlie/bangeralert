@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -7,11 +7,14 @@ import {
   Text,
   ActivityIndicator,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
+import { Audio } from "expo-av";
 
 import { api } from "../lib/api";
+import SongPreviewWrapper from "../ui/SongPreviewWrapper";
 
 export const HomeScreen = () => {
   const utils = api.useContext();
@@ -26,6 +29,19 @@ export const HomeScreen = () => {
 
   const feed = data?.pages.flatMap((page) => page.items.map((song) => song));
 
+  const playSound = async (url: string) => {
+    console.log("PLAYING SOUND");
+    const { sound } = await Audio.Sound.createAsync({ uri: url });
+    console.log("GOT SOUND", sound);
+    await sound.playAsync();
+    console.log("PLAYING SOUND");
+
+    setTimeout(async () => {
+      await sound.unloadAsync();
+      console.log("UNLOADING SOUND");
+    }, 2000);
+  };
+
   return (
     <SafeAreaView>
       <View className="h-full w-full px-2 py-3">
@@ -33,46 +49,50 @@ export const HomeScreen = () => {
           estimatedItemSize={30}
           data={feed}
           ItemSeparatorComponent={() => <View className="h-8" />}
-          renderItem={({ item: song }) => (
-            <View className="mx-auto w-full flex-row gap-4 rounded-lg bg-dark-containers px-2 pb-3">
-              <Pressable onPress={() => Linking.openURL(song.external_url)}>
-                <Image
-                  source={{ uri: song.album[0]?.cover_url! }}
-                  style={{ height: 150, width: 100, borderRadius: 5 }}
-                />
-              </Pressable>
-              <View>
-                {song.name.length > 20 ? (
-                  <>
-                    <Text className="text-md text-white" numberOfLines={1}>
-                      {song.name}
-                    </Text>
-                    <View className="flex items-center gap-0.5">
-                      <View className="flex">
-                        <Text className="font-xs text-gray-300">
-                          {song.album[0]?.name}
+          renderItem={({ item: song }) => {
+            return (
+              <SongPreviewWrapper song={song}>
+                <View className="mx-auto w-full flex-row gap-4 rounded-lg bg-dark-containers px-2 pb-3">
+                  <Pressable onPress={() => Linking.openURL(song.external_url)}>
+                    <Image
+                      source={{ uri: song.album[0]?.cover_url! }}
+                      style={{ height: 150, width: 100, borderRadius: 5 }}
+                    />
+                  </Pressable>
+                  <View>
+                    {song.name.length > 20 ? (
+                      <>
+                        <Text className="text-md text-white" numberOfLines={1}>
+                          {song.name}
                         </Text>
-                        <View className="mx-0.5" />
-                        <Text className="font-xs text-gray-300">
-                          {song.artist[0]?.name}
-                        </Text>
-                      </View>
-                      {song.explicit && (
-                        <MaterialIcons
-                          name="explicit"
-                          size={24}
-                          color="#d1d5db"
-                          className="mt-[0.05rem]"
-                        />
-                      )}
-                    </View>
-                  </>
-                ) : (
-                  <Text className="text-white">Hey</Text>
-                )}
-              </View>
-            </View>
-          )}
+                        <View className="flex items-center gap-0.5">
+                          <View className="flex">
+                            <Text className="font-xs text-gray-300">
+                              {song.album[0]?.name}
+                            </Text>
+                            <View className="mx-0.5" />
+                            <Text className="font-xs text-gray-300">
+                              {song.artist[0]?.name}
+                            </Text>
+                          </View>
+                          {song.explicit && (
+                            <MaterialIcons
+                              name="explicit"
+                              size={24}
+                              color="#d1d5db"
+                              className="mt-[0.05rem]"
+                            />
+                          )}
+                        </View>
+                      </>
+                    ) : (
+                      <Text className="text-white">Hey</Text>
+                    )}
+                  </View>
+                </View>
+              </SongPreviewWrapper>
+            );
+          }}
           keyExtractor={(item) => item.id}
           className="h-full"
           onRefresh={() => void utils.feed.getFeed.invalidate()}

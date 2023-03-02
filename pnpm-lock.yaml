@@ -53,6 +53,7 @@ importers:
       eslint: ^8.30.0
       expo: ~47.0.13
       expo-auth-session: ^3.8.0
+      expo-av: ~13.0.3
       expo-constants: ^14.0.2
       expo-device: ~5.0.0
       expo-random: ^13.0.0
@@ -87,6 +88,7 @@ importers:
       '@trpc/server': 10.8.1
       expo: 47.0.13_@babel+core@7.20.12
       expo-auth-session: 3.8.0_3cfklri74rc5w5ngxowx7ovxta
+      expo-av: 13.0.3_expo@47.0.13
       expo-constants: 14.0.2_expo@47.0.13
       expo-device: 5.0.0_expo@47.0.13
       expo-random: 13.0.0_expo@47.0.13
@@ -5382,6 +5384,14 @@ packages:
     transitivePeerDependencies:
       - expo
       - supports-color
+    dev: false
+
+  /expo-av/13.0.3_expo@47.0.13:
+    resolution: {integrity: sha512-9SpXOjY2MUK+jCIL68EUro/aHBlbZ3B4cY1nRr2aTPfv/dLD3bXRZNTTtSwOgsHbuKO6XwjHgCoYbd9T0GcE4A==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 47.0.13_@babel+core@7.20.12
     dev: false
 
   /expo-constants/14.0.2_expo@47.0.13:

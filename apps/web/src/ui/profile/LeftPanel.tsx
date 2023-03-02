@@ -14,6 +14,7 @@ const LeftPanel: React.FC<{ small?: boolean }> = () => {
       <PanelTitle>APP SETTINGS</PanelTitle>
       <PanelElement>Appearance</PanelElement>
       <PanelElement>Song Feed</PanelElement>
+      <PanelElement>Devices</PanelElement>
       <PanelBorder />
       <PanelElement>Changelog</PanelElement>
     </div>
